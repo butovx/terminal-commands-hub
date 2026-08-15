@@ -18,7 +18,6 @@ export default function Header({
   setActiveView,
   bookmarksCount,
   totalCount,
-  withDescCount,
   filteredCount,
   language,
   setLanguage,

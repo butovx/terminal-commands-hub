@@ -26,7 +26,6 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [descFilter, setDescFilter] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
   const [activeView, setActiveView] = useState('grid');
   
@@ -104,22 +103,12 @@ export default function App() {
     return counts;
   }, []);
 
-  const totalWithDesc = useMemo(() => {
-    return commandsData.filter(c => c.has_desc).length;
-  }, []);
-
   // Stabilized & Weighted Search + Filtering Logic
   const filteredCommands = useMemo(() => {
     let result = searchCommands(commandsData, debouncedSearchTerm);
 
     if (selectedCategory !== 'all') {
       result = result.filter(cmd => cmd.category === selectedCategory);
-    }
-
-    if (descFilter === 'has_desc') {
-      result = result.filter(cmd => cmd.has_desc);
-    } else if (descFilter === 'no_desc') {
-      result = result.filter(cmd => !cmd.has_desc);
     }
 
     // Apply secondary sorting if user selected explicit order
@@ -132,11 +121,11 @@ export default function App() {
     }
 
     return result;
-  }, [debouncedSearchTerm, selectedCategory, descFilter, sortBy]);
+  }, [debouncedSearchTerm, selectedCategory, sortBy]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedSearchTerm, selectedCategory, descFilter, sortBy]);
+  }, [debouncedSearchTerm, selectedCategory, sortBy]);
 
   const totalPages = Math.ceil(filteredCommands.length / PAGE_SIZE) || 1;
   const paginatedCommands = useMemo(() => {
@@ -159,7 +148,6 @@ export default function App() {
         setActiveView={setActiveView}
         bookmarksCount={bookmarkedIds.size}
         totalCount={commandsData.length}
-        withDescCount={totalWithDesc}
         filteredCount={filteredCommands.length}
         language={language}
         setLanguage={setLanguage}
@@ -175,8 +163,6 @@ export default function App() {
             <CategoryFilter
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              descFilter={descFilter}
-              setDescFilter={setDescFilter}
               sortBy={sortBy}
               setSortBy={setSortBy}
               categoryCounts={categoryCounts}

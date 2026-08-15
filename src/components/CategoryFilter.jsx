@@ -1,12 +1,10 @@
 import React from 'react';
 import { CATEGORIES, getCategoryMeta } from '../utils/categories';
-import { Filter, CheckCircle2, AlertCircle, SortAsc } from 'lucide-react';
+import { SortAsc } from 'lucide-react';
 
 export default function CategoryFilter({
   selectedCategory,
   setSelectedCategory,
-  descFilter,
-  setDescFilter,
   sortBy,
   setSortBy,
   categoryCounts,
@@ -47,46 +45,8 @@ export default function CategoryFilter({
       </div>
 
       {/* Sub-filters & Sorting toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#30363d]/60 text-xs">
+      <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-[#30363d]/60 text-xs">
         
-        {/* Status Filter */}
-        <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-lg border border-[#30363d]">
-          <button
-            onClick={() => setDescFilter('all')}
-            className={`px-2.5 py-1 rounded transition-all ${
-              descFilter === 'all'
-                ? 'bg-[#21262d] text-white font-semibold'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            {t.statusFilter.all}
-          </button>
-
-          <button
-            onClick={() => setDescFilter('has_desc')}
-            className={`px-2.5 py-1 rounded transition-all flex items-center gap-1 ${
-              descFilter === 'has_desc'
-                ? 'bg-emerald-950 text-emerald-400 font-semibold border border-emerald-800/60'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-            <span>{t.statusFilter.hasDesc}</span>
-          </button>
-
-          <button
-            onClick={() => setDescFilter('no_desc')}
-            className={`px-2.5 py-1 rounded transition-all flex items-center gap-1 ${
-              descFilter === 'no_desc'
-                ? 'bg-amber-950 text-amber-400 font-semibold border border-amber-800/60'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <AlertCircle className="w-3 h-3 text-amber-400" />
-            <span>{t.statusFilter.noDesc}</span>
-          </button>
-        </div>
-
         {/* Sorting Dropdown */}
         <div className="flex items-center gap-2">
           <span className="text-gray-400 text-xs flex items-center gap-1">
