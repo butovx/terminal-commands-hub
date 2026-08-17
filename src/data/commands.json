@@ -1454,16 +1454,25 @@
     "id": 89,
     "name": "awk",
     "has_desc": true,
-    "primary_desc": "pattern-directed scanning and processing language",
-    "ru_desc": "Язык сканирования и обработки с использованием шаблонов",
-    "example": "awk --help",
-    "tags": [],
+    "primary_desc": "Versatile data extraction and reporting tool. Splits lines into field columns ($1, $2), filters records by logic conditions, performs arithmetic calculations, and formats tabular data.",
+    "ru_desc": "Мощный язык сканирования и обработки текстовых табличных данных. Позволяет разделять строки на колонки, вычислять суммы, фильтровать записи по условиям и форматировать отчеты прямо из командной строки.",
+    "example": "awk -F':' '$3 >= 1000 {print $1, $6}' /etc/passwd",
+    "tags": [
+      "текст",
+      "колонки",
+      "парсер",
+      "скрипт",
+      "таблицы",
+      "awk"
+    ],
     "category": "text",
     "section": "1",
     "details": [
-      "awk(1)                   - pattern-directed scanning and processing language",
-      "English(3pm)             - use nice English (or awk) names for ugly punctuation variables",
-      "awk(1)                   - pattern-directed scanning and processing language"
+      "awk -F':' '$3 >= 1000 {print $1, $6}' /etc/passwd",
+      "-F fs : Use fs for input field separator (default is space/tab)",
+      "$1, $2, $N : Reference 1st, 2nd, N-th field/column in current line",
+      "BEGIN { ... } : Execute block before any input is read",
+      "END { ... } : Execute block after all input processing finishes"
     ]
   },
   {
@@ -2533,20 +2542,24 @@
     "id": 154,
     "name": "cat",
     "has_desc": true,
-    "primary_desc": "concatenate and print files",
-    "ru_desc": "Выводит содержимое файла в консоль или объединяет несколько файлов.",
-    "example": "cat file.txt",
+    "primary_desc": "Concatenate files and print their contents to standard output. Commonly used for viewing text files in terminal. Options like -n display line numbers, and -b numbers non-blank lines.",
+    "ru_desc": "Объединяет и выводит содержимое текстовых файлов в стандартный поток вывода (STDOUT). Часто используется для быстрого чтения файлов, а с помощью флагов -n нумерует строки, -b нумерует только непустые строки.",
+    "example": "cat -n config.env",
     "tags": [
       "чтение",
       "вывод",
-      "текст"
+      "текст",
+      "просмотр",
+      "cat"
     ],
     "category": "text",
     "section": "1",
     "details": [
-      "git-cat-file(1)          - Provide contents or details of repository objects",
-      "cat(1)                   - concatenate and print files",
-      "cat(1)                   - concatenate and print files"
+      "cat -n config.env",
+      "-n : Number all output lines",
+      "-b : Number non-empty output lines, overriding -n",
+      "-E : Display a $ at the end of each line",
+      "-s : Suppress repeated empty output lines into a single empty line"
     ]
   },
   {
@@ -2587,27 +2600,23 @@
     "id": 157,
     "name": "cd",
     "has_desc": true,
-    "primary_desc": "shell built-in commands",
-    "ru_desc": "Переход в другую директорию (смена текущего рабочего каталога).",
-    "example": "cd /path/to/dir",
+    "primary_desc": "Change the current working directory. Supports absolute paths, relative paths, ~ shortcut for the user's home directory, and cd - to toggle back to the previous directory.",
+    "ru_desc": "Встроенная команда оболочки для смены текущей рабочей директории. Поддерживает относительные пути, абсолютные пути, символ ~ (домашний каталог) и cd - для быстрого возврата в предыдущую директорию.",
+    "example": "cd ~/Projects/my-app",
     "tags": [
       "навигация",
       "переход",
-      "директории"
+      "директории",
+      "путь",
+      "cd"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "npm-trust(1)             - Manage trusted publishing relationships between packages and CI/CD providers",
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "cd(ntcl)                 - Change working directory",
-      "drutil(1)                - interact with CD/DVD burners",
-      "mount_cddafs(8)          - mount an Audio CD",
-      "trustcachectl(1)         - Load trust caches and query whether a cd hash is present in a loaded trust cache",
-      "DBIx::Class::Manual::Example(3pm) - Simple CD database example",
-      "DateTime::Locale::fr_CD(3pm) - Locale data examples for the French Congo - Kinshasa (fr-CD) locale",
-      "DateTime::Locale::ln_CD(3pm) - Locale data examples for the Lingala Congo - Kinshasa (ln-CD) locale",
-      "DateTime::Locale::lu_CD(3pm) - Locale data examples for the Luba-Katanga Congo - Kinshasa (lu-CD) locale"
+      "cd ~/Projects/my-app",
+      "cd .. : Move up one directory level to parent",
+      "cd ~ : Change to current user home directory",
+      "cd - : Change to previous working directory"
     ]
   },
   {
@@ -2757,40 +2766,48 @@
     "id": 167,
     "name": "chmod",
     "has_desc": true,
-    "primary_desc": "change file modes or Access Control Lists",
-    "ru_desc": "Изменяет права доступа (чтение, запись, выполнение) к файлам и папкам.",
-    "example": "chmod +x script.sh",
+    "primary_desc": "Change file access permissions for owner, group, and others. Supports symbolic notation (chmod +x script.sh) and numeric octal modes (chmod 755 script.sh / chmod 644 file.txt).",
+    "ru_desc": "Изменяет права доступа (режимы чтения r, записи w, выполнения x) для владельца, группы и остальных пользователей. Поддерживает как символьный формат (chmod +x script.sh), так и восьмеричные цифровые маски (chmod 755 dir).",
+    "example": "chmod +x script.sh && chmod 600 id_rsa",
     "tags": [
       "права",
       "безопасность",
-      "доступ"
+      "доступ",
+      "разрешения",
+      "chmod"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "chmod(1)                 - change file modes or Access Control Lists",
-      "chmod(1)                 - change file modes or Access Control Lists",
-      "chmod(2), fchmod(2), fchmodat(2) - change mode of file"
+      "chmod +x script.sh && chmod 600 id_rsa",
+      "+x : Make file executable for all users",
+      "755 : rwxr-xr-x (Full owner, read/execute for group & others)",
+      "644 : rw-r--r-- (Read/write owner, read-only for group & others)",
+      "600 : rw------- (Read/write owner only, private key standard)",
+      "-R : Change permissions recursively across subdirectories"
     ]
   },
   {
     "id": 168,
     "name": "chown",
     "has_desc": true,
-    "primary_desc": "change file owner and group",
-    "ru_desc": "Изменяет владельца и/или группу файла или директории.",
-    "example": "chown -R user:group ./app",
+    "primary_desc": "Change the user owner and group of files or directories. Critical for system administration and server setup. Use -R to recursively apply ownership changes throughout a directory tree.",
+    "ru_desc": "Изменяет владельца файла/папки и/или группу пользователей. Полезна при настройке веб-серверов или разграничении прав системных служб. Флаг -R применяет изменения рекурсивно ко всему содержимому папки.",
+    "example": "sudo chown -R www-data:www-data /var/www/html",
     "tags": [
       "владелец",
+      "группа",
       "права",
-      "пользователь"
+      "системный",
+      "chown"
     ],
     "category": "files",
     "section": "8",
     "details": [
-      "chown(8)                 - change file owner and group",
-      "chown(2), fchown(2), lchown(2), fchownat(2) - change owner and group of a file",
-      "chown(8)                 - change file owner and group"
+      "sudo chown -R www-data:www-data /var/www/html",
+      "user:group : Specify both target user owner and group",
+      "-R : Change ownership of directories and their contents recursively",
+      "-v : Output a diagnostic for every file processed"
     ]
   },
   {
@@ -3952,19 +3969,23 @@
     "id": 233,
     "name": "cp",
     "has_desc": true,
-    "primary_desc": "copy files",
-    "ru_desc": "Копирует файлы или директории из одного места в другое.",
-    "example": "cp -r src/ src_backup/",
+    "primary_desc": "Copy files and directories. Use -r (or -R) to copy directory structures recursively, -p to preserve file modes, ownership, and timestamps, and -i to prompt before overwriting existing destination files.",
+    "ru_desc": "Копирует файлы или целые структуры директорий. С флагом -r (или -R) копирует папки рекурсивно, с -v показывает процесс копирования, а с -p сохраняет права доступа, атрибуты и временные метки оригинальных файлов.",
+    "example": "cp -r -p ./src ./src_backup",
     "tags": [
       "копирование",
-      "дублирование"
+      "дублирование",
+      "резервная копия",
+      "cp"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "gh-codespace-cp(1)       - Copy files between local and remote file systems",
-      "cp(1)                    - copy files",
-      "cp(1)                    - copy files"
+      "cp -r -p ./src ./src_backup",
+      "-r, -R : Copy directories recursively",
+      "-p : Preserve original file mode, ownership, and timestamps",
+      "-i : Prompt before overwrite",
+      "-v : Verbose mode, showing files as they are copied"
     ]
   },
   {
@@ -4623,24 +4644,27 @@
     "id": 274,
     "name": "curl",
     "has_desc": true,
-    "primary_desc": "transfer a URL",
-    "ru_desc": "Утилита для отправки HTTP/HTTPS запросов и скачивания файлов по сети.",
-    "example": "curl -O https://example.com/file.zip",
+    "primary_desc": "Command-line tool for transferring data with URLs over HTTP, HTTPS, FTP, and more. Widely used for API testing, header inspection (-I), file downloads (-O), and sending payload data (-d).",
+    "ru_desc": "Универсальная консольная утилита для отправки сетевых запросов и передачи данных по протоколам HTTP, HTTPS, FTP, SFTP и др. Активно используется для тестирования REST API, скачивания файлов (-O), отправки заголовков и данных (-X POST -d).",
+    "example": "curl -X POST https://api.example.com/data -H \"Content-Type: application/json\" -d '{\"status\":\"active\"}'",
     "tags": [
       "сеть",
-      "HTTP",
-      "скачивание"
+      "http",
+      "api",
+      "скачивание",
+      "web",
+      "curl"
     ],
     "category": "network",
     "section": "1",
     "details": [
-      "curl(1)                  - transfer a URL",
-      "curl-config(1)           - Get information about a libcurl installation",
-      "curl(1)                  - transfer a URL",
-      "curl-config(1)           - Get information about a libcurl installation",
-      "curl_easy_getinfo(3)     - extract information from a curl handle",
-      "curl_easy_setopt(3)      - set options for a curl easy handle",
-      "curl_multi_setopt(3)     - set options for a curl multi handle"
+      "curl -X POST https://api.example.com/data -H \"Content-Type: application/json\" -d '{\"status\":\"active\"}'",
+      "-I, --head : Fetch HTTP headers only",
+      "-O, --remote-name : Write output to a local file named like the remote file",
+      "-L, --location : Follow HTTP redirects",
+      "-X, --request : Specify custom HTTP request method (GET, POST, PUT, DELETE)",
+      "-H, --header : Extra header to include in information sent to server",
+      "-d, --data : Send HTTP POST data"
     ]
   },
   {
@@ -5781,19 +5805,24 @@
     "id": 340,
     "name": "df",
     "has_desc": true,
-    "primary_desc": "display free disk space",
-    "ru_desc": "Показывает свободное и занятое дисковое пространство файловых систем.",
-    "example": "df -h",
+    "primary_desc": "Report file system disk space usage for mounted drives. Flag -h formats output in human-readable units (GB, MB), and -T prints the file system type (ext4, apfs, etc.).",
+    "ru_desc": "Показывает объем свободного и занятого дискового пространства на всех смонтированных файловых системах. Флаг -h (human-readable) отображает размеры в удобных единицах измерения (гигабайты, мегабайты), а -T показывает типы файловых систем.",
+    "example": "df -h -T",
     "tags": [
       "диск",
       "память",
-      "место"
+      "место",
+      "файловая система",
+      "df"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "df(1)                    - display free disk space",
-      "df(1)                    - display free disk space"
+      "df -h -T",
+      "-h, --human-readable : Print sizes in powers of 1024 (e.g., 1024M, 2G)",
+      "-T, --print-type : Print file system type",
+      "-i, --inodes : List inode information instead of block usage",
+      "-a, --all : Include dummy file systems"
     ]
   },
   {
@@ -6646,19 +6675,24 @@
     "id": 395,
     "name": "du",
     "has_desc": true,
-    "primary_desc": "display disk usage statistics",
-    "ru_desc": "Оценивает занимаемый объем диска файлами и директориями.",
-    "example": "du -sh *",
+    "primary_desc": "Estimate disk space used by directories and files. Options -sh produce a human-readable total summary size for a target folder without listing every subfile.",
+    "ru_desc": "Оценивает объем дискового пространства, занимаемый конкретными файлами и папками. Флаги -sh (summary + human-readable) выводят итоговый суммарный размер указанной директории, а --max-depth=1 ограничивает глубину вложенности.",
+    "example": "du -sh ./node_modules/* | sort -hr",
     "tags": [
       "размер",
+      "диск",
       "папка",
-      "диск"
+      "анализ",
+      "du"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "du(1)                    - display disk usage statistics",
-      "du(1)                    - display disk usage statistics"
+      "du -sh ./node_modules/* | sort -hr",
+      "-s, --summarize : Display only a total for each argument",
+      "-h, --human-readable : Print sizes in human readable format (e.g., 1K 234M 2G)",
+      "-c, --total : Produce a grand total",
+      "--max-depth=N : Print total for a directory only if N or fewer levels below command argument"
     ]
   },
   {
@@ -8004,26 +8038,25 @@
     "id": 474,
     "name": "find",
     "has_desc": true,
-    "primary_desc": "walk a file hierarchy",
-    "ru_desc": "Ищет файлы и директории в файловой системе по именам, дате, размеру и т.д.",
-    "example": "find . -name '*.js'",
+    "primary_desc": "Search for files in a directory hierarchy based on criteria like name (-name), type (-type), size (-size), modification time (-mtime), and execute commands on matches via -exec.",
+    "ru_desc": "Утилита глобального поиска файлов и директорий по дереву файловой системы. Позволяет искать по имени (-name), типу (-type f/d), размеру (-size), времени изменения (-mtime) и выполнять команды над найденными объектами (-exec).",
+    "example": "find . -type f -name \"*.log\" -mtime +7 -delete",
     "tags": [
       "поиск",
-      "файловая система"
+      "файловая система",
+      "фильтр",
+      "найти",
+      "find"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "git-bisect(1)            - Use binary search to find the commit that introduced a bug",
-      "git-cherry(1)            - Find commits yet to be applied to upstream",
-      "git-merge-base(1)        - Find as good common ancestors as possible for a merge",
-      "git-name-rev(1)          - Find symbolic names for given revs",
-      "git-pack-redundant(1)    - Find redundant pack files",
-      "strings(1)               - find the printable strings in a object, or other binary, file",
-      "SPI_cursor_find(3)       - find an existing cursor by name",
-      "XkbFindOverlayForKey(3)  - Find the alternate name by using the primary name for a key that is part of an overlay",
-      "XkbLookupKeyBinding(3)   - Find the string bound to a key by XRebindKeySym",
-      "XkbLookupKeySym(3)       - Find the symbol associated with a key for a particular state"
+      "find . -type f -name \"*.log\" -mtime +7 -delete",
+      "-type f/d : Filter search by regular files (f) or directories (d)",
+      "-name Pattern : Base of file name matching pattern wildcard",
+      "-mtime +N : File was modified more than N days ago",
+      "-size +100M : Files larger than 100 Megabytes",
+      "-exec COMMAND {} + : Execute command on all matched files"
     ]
   },
   {
@@ -9185,27 +9218,25 @@
     "id": 544,
     "name": "git",
     "has_desc": true,
-    "primary_desc": "the stupid content tracker",
-    "ru_desc": "Распределённая система управления версиями исходного кода.",
-    "example": "git status",
+    "primary_desc": "Distributed version control system for tracking source code changes. Enables branching (git branch), staging and committing (git commit), merging (git merge), and remote sync (git push/git pull).",
+    "ru_desc": "Распределенная система управления версиями исходного кода. Позволяет отслеживать изменения в файлах, создавать независимые ветки (git branch), фиксировать состояния (git commit), объединять код (git merge) и синхронизировать с удаленными репозиториями.",
+    "example": "git status && git log --oneline -n 5",
     "tags": [
-      "версии",
       "git",
-      "разработка"
+      "версии",
+      "разработка",
+      "код",
+      "репозиторий"
     ],
     "category": "dev",
     "section": "1",
     "details": [
-      "git(1)                   - the stupid content tracker",
-      "git-add(1)               - Add file contents to the index",
-      "git-am(1)                - Apply a series of patches from a mailbox",
-      "git-annotate(1)          - Annotate file lines with commit information",
-      "git-apply(1)             - Apply a patch to files and/or to the index",
-      "git-archive(1)           - Create an archive of files from a named tree",
-      "git-backfill(1)          - Download missing objects in a partial clone",
-      "git-bisect(1)            - Use binary search to find the commit that introduced a bug",
-      "git-blame(1)             - Show what revision and author last modified each line of a file",
-      "git-branch(1)            - List, create, or delete branches"
+      "git status && git log --oneline -n 5",
+      "status : Show working tree and staging status",
+      "add : Add file contents to the index",
+      "commit -m \"msg\" : Record changes to repository with message",
+      "checkout -b name : Create and switch to new branch",
+      "pull / push : Fetch & merge from remote or publish local commits"
     ]
   },
   {
@@ -9562,21 +9593,26 @@
     "id": 566,
     "name": "grep",
     "has_desc": true,
-    "primary_desc": "file pattern searcher",
-    "ru_desc": "Ищет строки, соответствующие заданному шаблону/регулярному выражению в файлах.",
-    "example": "grep -rn 'TODO' ./src",
+    "primary_desc": "Search text using pattern matching and regular expressions. Essential tool supporting -r (recursive search in directories), -n (show line numbers), -i (case-insensitive search), and -v (invert match).",
+    "ru_desc": "Мощная утилита поиска строк по регулярным выражениям в текстовых файлах и потоках. Поддерживает флаговые комбинации: -r (рекурсивный поиск в папках), -n (номера строк), -i (игнорирование регистра) и -v (инвертированный поиск).",
+    "example": "grep -rn -i \"error\" /var/log/",
     "tags": [
       "поиск",
       "фильтрация",
-      "текст"
+      "текст",
+      "regex",
+      "grep"
     ],
     "category": "text",
     "section": "1",
     "details": [
-      "git-grep(1)              - Print lines matching a pattern",
-      "pcre2grep(1)             - a grep with Perl-compatible regular expressions",
-      "grep(1), egrep(1), fgrep(1), rgrep(1), bzgrep(1), bzegrep(1), bzfgrep(1), zgrep(1), zegrep(1), zfgrep(1) - file pattern searcher",
-      "grep(1), egrep(1), fgrep(1), rgrep(1), bzgrep(1), bzegrep(1), bzfgrep(1), zgrep(1), zegrep(1), zfgrep(1) - file pattern searcher"
+      "grep -rn -i \"error\" /var/log/",
+      "-r, -R : Read all files under each directory, recursively",
+      "-n : Prefix each line of output with the 1-based line number within its input file",
+      "-i : Ignore case distinctions in patterns and input data",
+      "-v : Invert match, selecting non-matching lines",
+      "-E : Interpret PATTERN as an extended regular expression (ERE)",
+      "-l : Suppress normal output; instead print the name of each matching file"
     ]
   },
   {
@@ -10055,19 +10091,23 @@
     "id": 594,
     "name": "head",
     "has_desc": true,
-    "primary_desc": "display first lines of a file",
-    "ru_desc": "Отображать первые строки файла",
-    "example": "head --help",
-    "tags": [],
+    "primary_desc": "Print the first lines of files or stdin stream (10 lines by default). Option -n customizes the number of output lines, while -c displays a specified number of bytes.",
+    "ru_desc": "Выводит первые строки текстового файла или входного потока (по умолчанию первые 10 строк). С флагом -n можно точно задать количество выводимых строк (например, head -n 20), а с -c выводит определенное число байт.",
+    "example": "head -n 20 /var/log/syslog",
+    "tags": [
+      "чтение",
+      "файл",
+      "текст",
+      "просмотр",
+      "head"
+    ],
     "category": "text",
     "section": "1",
     "details": [
-      "git-reset(1)             - Reset current HEAD to the specified state",
-      "head(1)                  - display first lines of a file",
-      "CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS(3) - head start for IPv6 for happy eyeballs",
-      "HTML::HeadParser(3pm)    - Parse <HEAD> section of a HTML document",
-      "MIME::Head(3pm)          - MIME message header (a subclass of Mail::Header)",
-      "head(1)                  - display first lines of a file"
+      "head -n 20 /var/log/syslog",
+      "-n K : Print first K lines instead of first 10",
+      "-c K : Print first K bytes of each file",
+      "-q : Never print headers giving file names"
     ]
   },
   {
@@ -12581,27 +12621,24 @@
     "id": 742,
     "name": "kill",
     "has_desc": true,
-    "primary_desc": "shell built-in commands",
-    "ru_desc": "Отправляет сигнал процессу (например, SIGKILL или SIGTERM для завершения).",
-    "example": "kill -9 1234",
+    "primary_desc": "Send signals to processes by Process ID (PID). Sends SIGTERM (15) by default for graceful termination, or SIGKILL (-9) to force immediate termination of non-responsive processes.",
+    "ru_desc": "Отправляет системный сигнал завершения или управления процессу по его PID. По умолчанию посылает сигнал SIGTERM (15) для мягкого закрытия, а kill -9 отправляет SIGKILL для немедленного принудительного уничтожения процесса.",
+    "example": "kill -9 12345",
     "tags": [
       "процесс",
       "завершение",
-      "сигнал"
+      "сигнал",
+      "pid",
+      "kill"
     ],
     "category": "system",
     "section": "1",
     "details": [
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "kill(1)                  - terminate or signal a process",
-      "kill.d(1m)               - snoop process signals as they occur. Uses DTrace",
-      "killall(1)               - kill processes by name",
-      "Proc::Killall(3pm), killall(3pm) - Kill all instances of a process by pattern matching the command-line",
-      "Proc::Killall5.34(3pm), killall(3pm) - Kill all instances of a process by pattern matching the command-line",
-      "Proc::Killfam(3pm)       - kill a list of pids, and all their sub-children",
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "kill(1)                  - terminate or signal a process",
-      "kill(2)                  - send signal to a process"
+      "kill -9 12345",
+      "-9, -SIGKILL : Kill process immediately without cleanup (cannot be caught or ignored)",
+      "-15, -SIGTERM : Termination signal (allows process to clean up resources before exit)",
+      "-1, -SIGHUP : Hangup signal (often used to instruct daemons to reload configuration)",
+      "-l : List signal names"
     ]
   },
   {
@@ -13979,27 +14016,26 @@
     "id": 825,
     "name": "ls",
     "has_desc": true,
-    "primary_desc": "list directory contents",
-    "ru_desc": "Выводит список файлов и каталогов в текущей или указанной директории.",
-    "example": "ls -la",
+    "primary_desc": "List directory contents. Displays file names, permissions, owner, size, and modification timestamps. Commonly combined with -l (long listing format), -a (all files including hidden . files), -h (human-readable sizes), and --color for syntax highlighting.",
+    "ru_desc": "Утилита вывода списка файлов и директорий. Показывает имена файлов, права доступа, владельца, размер и время изменения. Часто используется с флагами -l (подробный список), -a (включая скрытые файлы), -h (человекочитаемый размер) и --color для подсветки типов файлов.",
+    "example": "ls -la -h --color=auto",
     "tags": [
       "файлы",
       "просмотр",
-      "содержимое"
+      "директория",
+      "права",
+      "список",
+      "ls"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "git-ls-files(1)          - Show information about files in the index and the working tree",
-      "git-ls-remote(1)         - List references in a remote repository",
-      "git-ls-tree(1)           - List the contents of a tree object",
-      "git-mktree(1)            - Build a tree-object from ls-tree formatted text",
-      "npm-ls(1)                - List installed packages",
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "ls(1)                    - list directory contents",
-      "DateTime::Locale::en_LS(3pm) - Locale data examples for the English Lesotho (en-LS) locale",
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "ls(1)                    - list directory contents"
+      "ls -la -h --color=auto",
+      "-l : Long listing format displaying permissions, owner, group, size, and date",
+      "-a : Do not ignore entries starting with . (show hidden files)",
+      "-h : Print sizes in human readable format (e.g., 1K 234M 2G)",
+      "-t : Sort by modification time, newest first",
+      "-R : List subdirectories recursively"
     ]
   },
   {
@@ -15369,20 +15405,23 @@
     "id": 908,
     "name": "mkdir",
     "has_desc": true,
-    "primary_desc": "make directories",
-    "ru_desc": "Создаёт одну или несколько новых директорий.",
-    "example": "mkdir -p project/src",
+    "primary_desc": "Create new directories in the file system. Use the -p (parents) flag to automatically build nested directory paths and avoid errors if intermediate directories don't exist yet or if the target directory already exists.",
+    "ru_desc": "Создаёт новые директории в файловой системе. Флаг -p (parents) позволяет автоматически создавать всю цепочку вложенных каталогов без ошибок, если родительские папки ещё не существуют, а также предотвращает ошибку, если папка уже существует.",
+    "example": "mkdir -p project/src/components",
     "tags": [
       "создание",
+      "папка",
       "директория",
-      "папка"
+      "структура",
+      "mkdir"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "mkdir(1)                 - make directories",
-      "mkdir(1)                 - make directories",
-      "mkdir(2), mkdirat(2)     - make a directory file"
+      "mkdir -p project/src/components",
+      "-p : Create parent directories as needed, no error if existing",
+      "-v : Print a message for each created directory",
+      "-m 755 : Set file permission mode for the created directory"
     ]
   },
   {
@@ -16313,19 +16352,22 @@
     "id": 968,
     "name": "mv",
     "has_desc": true,
-    "primary_desc": "move files",
-    "ru_desc": "Перемещает или переименовывает файлы и директории.",
-    "example": "mv old_name.txt new_name.txt",
+    "primary_desc": "Move or rename files and directories. If the destination is on the same file system, the operation is instantaneous as only file metadata is updated. Use -i to prompt before overwriting existing files.",
+    "ru_desc": "Перемещает файлы и директории из одного места в другое, а также используется для их переименования. Если целевой путь находится на том же монтированном диске, операция выполняется мгновенно путём изменения записи в файловой системе.",
+    "example": "mv draft.txt final_report.txt",
     "tags": [
       "перемещение",
-      "переименование"
+      "переименование",
+      "файлы",
+      "mv"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "git-mv(1)                - Move or rename a file, a directory, or a symlink",
-      "mv(1)                    - move files",
-      "mv(1)                    - move files"
+      "mv draft.txt final_report.txt",
+      "-i : Prompt before overwriting an equivalent destination file",
+      "-n : Do not overwrite an existing file",
+      "-v : Explain what is being done"
     ]
   },
   {
@@ -20711,26 +20753,24 @@
     "id": 1232,
     "name": "ps",
     "has_desc": true,
-    "primary_desc": "pcl and postscript print commands for ippeveprinter",
-    "ru_desc": "Выводит список активных процессов текущей системы.",
+    "primary_desc": "Displays information about active system processes. The classic command ps aux presents a full system-wide overview including PID, CPU/RAM usage, execution time, and process paths.",
+    "ru_desc": "Выводит снимки текущих активных процессов в системе. Комбинация ps aux выводит исчерпывающую информацию о процессах всех пользователей с указанием PID, использования CPU и RAM, времени запуска и вызывающей команды.",
     "example": "ps aux | grep node",
     "tags": [
       "процессы",
-      "список"
+      "система",
+      "pid",
+      "мониторинг",
+      "ps"
     ],
     "category": "system",
     "section": "1",
     "details": [
-      "any2djvu(1)              - Convert .ps/.ps.gz/.pdf to .djvu",
-      "djvudigital(1)           - creates DjVu files from PS or PDF files",
-      "ippevepcl(7), ippevepcl/ps(7) - pcl and postscript print commands for ippeveprinter",
-      "ps(1)                    - process status",
-      "DateTime::Locale::ar_PS(3pm) - Locale data examples for the Arabic Palestinian Territories (ar-PS) locale",
-      "DateTime::Locale::ps(3pm) - Locale data examples for the Pashto (ps) locale",
-      "DateTime::Locale::ps_AF(3pm) - Locale data examples for the Pashto Afghanistan (ps-AF) locale",
-      "DateTime::Locale::ps_PK(3pm) - Locale data examples for the Pashto Pakistan (ps-PK) locale",
-      "ippevepcl(7), ippevepcl/ps(7) - pcl and postscript print commands for ippeveprinter",
-      "ps(1)                    - process status"
+      "ps aux | grep node",
+      "a : Lift BSD style BSD 'only yourself' restriction (shows processes of all users)",
+      "u : Display user-oriented format (shows user, CPU%, MEM%, etc.)",
+      "x : Lift BSD style 'must have tty' restriction (shows processes without controlling terminal)",
+      "-ef : Standard UNIX format listing all processes"
     ]
   },
   {
@@ -20978,23 +21018,22 @@
     "id": 1248,
     "name": "pwd",
     "has_desc": true,
-    "primary_desc": "shell built-in commands",
-    "ru_desc": "Печатает абсолютный путь к текущей рабочей директории.",
-    "example": "pwd",
+    "primary_desc": "Print the full absolute path of the current working directory. Helps verify your exact location before executing operations. Option -P resolves all symbolic links to show the physical path.",
+    "ru_desc": "Печатает абсолютный путь к текущей рабочей директории терминала. Полезна для проверки расположения перед выполнением опасных операций. Флаг -P выводит физический путь с разворачиванием всех символических ссылок.",
+    "example": "pwd -P",
     "tags": [
       "путь",
       "директория",
-      "текущий"
+      "навигация",
+      "текущий",
+      "pwd"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "pwd(1)                   - return working directory name",
-      "pwd(ntcl)                - Return the absolute path of the current working directory",
-      "builtin(1), !(1), %(1), .(1), :(1), @(1), [(1), {(1), }(1), alias(1), alloc(1), bg(1), bind(1), bindkey(1), break(1), breaksw(1), builtins(1), case(1), cd(1), chdir(1), command(1), complete(1), continue(1), default(1), dirs(1), do(1), done(1), echo(1), echotc(1), elif(1), else(1), end(1), endif(1), endsw(1), esac(1), eval(1), exec(1), exit(1), export(1), false(1), fc(1), fg(1), filetest(1), fi(1), for(1), foreach(1), getopts(1), glob(1), goto(1), hash(1), hashstat(1), history(1), hup(1), if(1), jobid(1), jobs(1), kill(1), limit(1), local(1), log(1), login(1), logout(1), ls-F(1), nice(1), nohup(1), notify(1), onintr(1), popd(1), printenv(1), printf(1), pushd(1), pwd(1), read(1), readonly(1), rehash(1), repeat(1), return(1), sched(1), set(1), setenv(1), settc(1), setty(1), setvar(1), shift(1), source(1), stop(1), suspend(1), switch(1), telltc(1), test(1), then(1), time(1), times(1), trap(1), true(1), type(1), ulimit(1), umask(1), unalias(1), uncomplete(1), unhash(1), unlimit(1), unset(1), unsetenv(1), until(1), wait(1), where(1), which(1), while(1) - shell built-in commands",
-      "pwd(1)                   - return working directory name",
-      "pwd(ntcl)                - Return the absolute path of the current working directory"
+      "pwd -P",
+      "-L : Print the environment $PWD, even if it contains symlinks (default)",
+      "-P : Avoid all symlinks and print the physical structure directory path"
     ]
   },
   {
@@ -22071,22 +22110,24 @@
     "id": 1312,
     "name": "rm",
     "has_desc": true,
-    "primary_desc": "remove directory entries",
-    "ru_desc": "Удаляет файлы или директории (с флагом -r). Будьте осторожны!",
-    "example": "rm -rf node_modules",
+    "primary_desc": "Remove files or directory trees. WARNING: Files deleted via rm bypass the trash bin and cannot be restored easily. Use -r for recursive directory removal and -f to suppress prompt confirmations.",
+    "ru_desc": "Удаляет файлы или директории из файловой системы. ВНИМАНИЕ: удаление через rm происходит безвозвратно мимо корзины! Для удаления папок со всем содержимым используется комбинация флагов -rf (recursive + force).",
+    "example": "rm -rf node_modules build",
     "tags": [
       "удаление",
       "файлы",
-      "опасно"
+      "опасно",
+      "очистка",
+      "rm"
     ],
     "category": "files",
     "section": "1",
     "details": [
-      "git-rm(1)                - Remove files from the working tree and from the index",
-      "rm(1), unlink(1)         - remove directory entries",
-      "DateTime::Locale::rm(3pm) - Locale data examples for the Romansh (rm) locale",
-      "DateTime::Locale::rm_CH(3pm) - Locale data examples for the Romansh Switzerland (rm-CH) locale",
-      "rm(1), unlink(1)         - remove directory entries"
+      "rm -rf node_modules build",
+      "-r, -R : Remove directories and their contents recursively",
+      "-f : Ignore nonexistent files and arguments, never prompt for confirmation",
+      "-i : Prompt before every removal (safer interactive mode)",
+      "-v : Explain what is being done"
     ]
   },
   {
@@ -22661,20 +22702,24 @@
     "id": 1347,
     "name": "scp",
     "has_desc": true,
-    "primary_desc": "OpenSSH secure file copy",
-    "ru_desc": "Безопасное копирование файлов между хостами по протоколу SSH.",
-    "example": "scp file.txt user@remote:/var/www/",
+    "primary_desc": "Secure Copy protocol tool for transferring files and directories securely between local and remote hosts over SSH. Supports recursive copying (-r) and custom SSH ports (-P).",
+    "ru_desc": "Утилита безопасного копирования файлов и папок между компьютерами в сети по шифрованному протоколу SSH. С флагом -r рекурсивно передает директории, а -P позволяет указать нестандартный порт SSH.",
+    "example": "scp -P 2222 -r ./dist user@remote.server.com:/var/www/html/",
     "tags": [
+      "scp",
       "копирование",
       "ssh",
-      "сеть"
+      "сеть",
+      "файлы"
     ],
     "category": "network",
     "section": "1",
     "details": [
-      "scp(1)                   - OpenSSH secure file copy",
-      "CURLOPT_SSH_AUTH_TYPES(3) - auth types for SFTP and SCP",
-      "scp(1)                   - OpenSSH secure file copy"
+      "scp -P 2222 -r ./dist user@remote.server.com:/var/www/html/",
+      "-r : Recursively copy entire directories",
+      "-P port : Specifies port to connect to on remote host",
+      "-C : Compression enable (passes -C flag to ssh to enable compression)",
+      "-p : Preserves modification times, access times, and modes from original"
     ]
   },
   {
@@ -22911,15 +22956,25 @@
     "id": 1361,
     "name": "sed",
     "has_desc": true,
-    "primary_desc": "stream editor",
-    "ru_desc": "Редактор потока",
-    "example": "sed --help",
-    "tags": [],
+    "primary_desc": "Stream editor for filtering and transforming text line-by-line. Commonly used for find-and-replace (s/old/new/g), deleting lines, and in-place file modifications via -i.",
+    "ru_desc": "Потоковый текстовый редактор (Stream Editor) для выполнения автоматических трансформаций текста: замены слов, удаления строк и фильтрации. Команда sed 's/old/new/g' меняет все вхождения строки old на new, а -i сохраняет изменения прямо в файле.",
+    "example": "sed -i '' 's/localhost/127.0.0.1/g' config.json",
+    "tags": [
+      "текст",
+      "замена",
+      "редактор",
+      "stream",
+      "regex",
+      "sed"
+    ],
     "category": "text",
     "section": "1",
     "details": [
-      "sed(1)                   - stream editor",
-      "sed(1)                   - stream editor"
+      "sed -i '' 's/localhost/127.0.0.1/g' config.json",
+      "-i[SUFFIX] : Edit files in place (makes backup if SUFFIX supplied)",
+      "-e script : Add script commands to be executed",
+      "-n : Suppress automatic printing of pattern space",
+      "s/regexp/replacement/g : Global find and replace matching regular expression"
     ]
   },
   {
@@ -24702,27 +24757,24 @@
     "id": 1469,
     "name": "ssh",
     "has_desc": true,
-    "primary_desc": "OpenSSH remote login client",
-    "ru_desc": "Клиент для защищённого удалённого подключения к серверу по протоколу SSH.",
-    "example": "ssh user@remote-server.com",
+    "primary_desc": "Secure Shell client for encrypted remote terminal access and server management. Supports public key authentication (-i), port forwarding (-L), and remote command execution.",
+    "ru_desc": "Клиент защищенного сетевого протокола SSH для безопасного удаленного входа в систему и управления серверами. Шифрует весь трафик. Поддерживает авторизацию по SSH-ключам (-i), проброс портов (-L/-R) и выполнение команд на удаленном хосте.",
+    "example": "ssh -i ~/.ssh/id_ed25519 user@192.168.1.100 -p 22",
     "tags": [
-      "удаленный доступ",
+      "ssh",
       "сервер",
-      "ssh"
+      "удаленный доступ",
+      "безопасность",
+      "подключение"
     ],
     "category": "network",
     "section": "1",
     "details": [
-      "git-shell(1)             - Restricted login shell for Git-only SSH access",
-      "gh-codespace-ssh(1)      - SSH into a codespace",
-      "gh-ssh-key(1)            - Manage SSH keys",
-      "gh-ssh-key-add(1)        - Add an SSH key to your GitHub account",
-      "gh-ssh-key-delete(1)     - Delete an SSH key from your GitHub account",
-      "gh-ssh-key-list(1)       - Lists SSH keys in your GitHub account",
-      "apple_ssh_and_filevault(7) - SSH and FileVault",
-      "apple_ssh_and_fips(7)    - Configuring SSH for FIPS algorithms",
-      "ssh(1)                   - OpenSSH remote login client",
-      "ssh-add(1)               - adds private key identities to the OpenSSH authentication agent"
+      "ssh -i ~/.ssh/id_ed25519 user@192.168.1.100 -p 22",
+      "-i identity_file : Select file from which identity (private key) is read",
+      "-p port : Port to connect to on remote host",
+      "-L local_port:host:host_port : Local port forwarding tunnel",
+      "-C : Request compression of all data"
     ]
   },
   {
@@ -25061,27 +25113,24 @@
     "id": 1490,
     "name": "sudo",
     "has_desc": true,
-    "primary_desc": "execute a command as another user",
-    "ru_desc": "Выполняет команду с правами суперпользователя (root) или другого пользователя.",
+    "primary_desc": "Execute a command with superuser (root) or target user security privileges as dictated by /etc/sudoers. Essential for secure system management without permanently staying logged in as root.",
+    "ru_desc": "Выполняет команду с привилегиями суперпользователя (root) или другого учетного пользователя системы согласно файлу конфигурации /etc/sudoers. Позволяет безопасно выполнять админские задачи без постоянного входа под root.",
     "example": "sudo systemctl restart nginx",
     "tags": [
       "root",
-      "админ",
-      "права"
+      "права",
+      "безопасность",
+      "администрирование",
+      "sudo"
     ],
     "category": "system",
     "section": "8",
     "details": [
-      "sudo(8), sudoedit(8)     - execute a command as another user",
-      "sudo.conf(5)             - configuration for sudo front-end",
-      "sudo_plugin(5)           - Sudo Plugin API",
-      "sudoers(5)               - default sudo security policy plugin",
-      "sudoreplay(8)            - replay sudo session logs",
-      "sudo(8), sudoedit(8)     - execute a command as another user",
-      "sudo.conf(5)             - configuration for sudo front-end",
-      "sudo_plugin(5)           - Sudo Plugin API",
-      "sudoers(5)               - default sudo security policy plugin",
-      "sudoreplay(8)            - replay sudo session logs"
+      "sudo systemctl restart nginx",
+      "-i : Run an interactive login shell as the target user (root)",
+      "-u user : Run command as specified user instead of root",
+      "-s : Run shell specified by SHELL environment variable",
+      "-v : Update user timestamp, extending sudo session timeout"
     ]
   },
   {
@@ -25649,16 +25698,24 @@
     "id": 1523,
     "name": "tail",
     "has_desc": true,
-    "primary_desc": "display the last part of a file",
-    "ru_desc": "Отобразить последнюю часть файла",
-    "example": "tail --help",
-    "tags": [],
+    "primary_desc": "Print the last lines of a file. Use the -f (follow) flag to continuously stream newly appended lines in real-time, making it indispensable for live log analysis.",
+    "ru_desc": "Выводит последние строки файла (по умолчанию 10 строк). Флаг -f (follow) непрерывно отслеживает файл и выводит новые добавленные строки в реальном времени, что идеально для мониторинга лог-файлов серверов.",
+    "example": "tail -f -n 50 /var/log/nginx/access.log",
+    "tags": [
+      "логи",
+      "чтение",
+      "слежение",
+      "мониторинг",
+      "tail"
+    ],
     "category": "text",
     "section": "1",
     "details": [
-      "tail(1)                  - display the last part of a file",
-      "SLIST_EMPTY(3), SLIST_ENTRY(3), SLIST_FIRST(3), SLIST_FOREACH(3), SLIST_FOREACH_SAFE(3), SLIST_HEAD(3), SLIST_HEAD_INITIALIZER(3), SLIST_INIT(3), SLIST_INSERT_AFTER(3), SLIST_INSERT_HEAD(3), SLIST_NEXT(3), SLIST_REMOVE_HEAD(3), SLIST_REMOVE(3), STAILQ_CONCAT(3), STAILQ_EMPTY(3), STAILQ_ENTRY(3), STAILQ_FIRST(3), STAILQ_FOREACH(3), STAILQ_FOREACH_SAFE(3), STAILQ_HEAD(3), STAILQ_HEAD_INITIALIZER(3), STAILQ_INIT(3), STAILQ_INSERT_AFTER(3), STAILQ_INSERT_HEAD(3), STAILQ_INSERT_TAIL(3), STAILQ_LAST(3), STAILQ_NEXT(3), STAILQ_REMOVE_HEAD(3), STAILQ_REMOVE(3), LIST_EMPTY(3), LIST_ENTRY(3), LIST_FIRST(3), LIST_FOREACH(3), LIST_FOREACH_SAFE(3), LIST_HEAD(3), LIST_HEAD_INITIALIZER(3), LIST_INIT(3), LIST_INSERT_AFTER(3), LIST_INSERT_BEFORE(3), LIST_INSERT_HEAD(3), LIST_NEXT(3), LIST_REMOVE(3), TAILQ_CONCAT(3), TAILQ_EMPTY(3), TAILQ_ENTRY(3), TAILQ_FIRST(3), TAILQ_FOREACH(3), TAILQ_FOREACH_SAFE(3), TAILQ_FOREACH_REVERSE(3), TAILQ_FOREACH_REVERSE_SAFE(3), TAILQ_HEAD(3), TAILQ_HEAD_INITIALIZER(3), TAILQ_INIT(3), TAILQ_INSERT_AFTER(3), TAILQ_INSERT_BEFORE(3), TAILQ_INSERT_HEAD(3), TAILQ_INSERT_TAIL(3), TAILQ_LAST(3), TAILQ_NEXT(3), TAILQ_PREV(3), TAILQ_REMOVE(3) - implementations of singly-linked lists, singly-linked tail queues, lists and tail queues",
-      "tail(1)                  - display the last part of a file"
+      "tail -f -n 50 /var/log/nginx/access.log",
+      "-f, --follow : Output appended data as file grows",
+      "-n K : Output last K lines instead of last 10",
+      "-F : Same as -f --retry (keep tracking even if file is recreated/rotated)",
+      "-c K : Output last K bytes"
     ]
   },
   {
@@ -25697,26 +25754,26 @@
     "id": 1526,
     "name": "tar",
     "has_desc": true,
-    "primary_desc": "an archiving utility",
-    "ru_desc": "Архиватор файлов (создание, распаковка и просмотр tar.gz, tar.bz2 архивов).",
-    "example": "tar -czvf archive.tar.gz ./folder",
+    "primary_desc": "Archiving utility used to combine multiple files into a single .tar archive file with optional compression (-z for gzip, -j for bzip2, -J for xz). Core flags: -c (create), -x (extract), -v (verbose), -f (file).",
+    "ru_desc": "Стандартный архиватор Linux/macOS для объединения файлов в единый tar-архив с опциональным сжатием (gzip -z, bzip2 -j, xz -J). Ключевые режимы: -c (создать), -x (извлечь), -v (подробно), -f (указать имя файла).",
+    "example": "tar -czvf archive.tar.gz ./my_project",
     "tags": [
       "архив",
-      "сжатие"
+      "сжатие",
+      "tar",
+      "распаковка",
+      "архивация"
     ],
     "category": "archive",
     "section": "1",
     "details": [
-      "git-get-tar-commit-id(1) - Extract commit ID from an archive created using git-archive",
-      "gtar(1), tar(1)          - an archiving utility",
-      "ptar(1)                  - a tar-like program written in perl",
-      "ptargrep(1)              - Apply pattern matching to the contents of files in a tar archive",
-      "tar(1)                   - manipulate tape archives",
-      "tar(5)                   - format of tape archive files",
-      "tar(n)                   - Tar file creation, extraction & manipulation",
-      "Archive::Tar(3pm)        - module for manipulations of tar archives",
-      "Archive::Tar::File(3pm)  - a subclass for in-memory extracted file from Archive::Tar",
-      "CPAN::Tarzip(3pm)        - internal handling of tar archives for CPAN.pm"
+      "tar -czvf archive.tar.gz ./my_project",
+      "-c : Create new archive",
+      "-x : Extract files from an archive",
+      "-z : Filter archive through gzip compression",
+      "-j : Filter archive through bzip2 compression",
+      "-v : Verbosely list files processed",
+      "-f : Use archive file specified"
     ]
   },
   {
@@ -26621,27 +26678,25 @@
     "id": 1582,
     "name": "top",
     "has_desc": true,
-    "primary_desc": "display sorted information about processes",
-    "ru_desc": "Динамический монитор процессов и загрузки процессора/памяти в реальном времени.",
-    "example": "top",
+    "primary_desc": "Real-time interactive process monitor displaying CPU and memory usage, uptime, load averages, and active system processes with dynamic sorting.",
+    "ru_desc": "Консольный монитор системных ресурсов в реальном времени. Отображает список процессов, динамически сортируемый по нагрузке на процессор (CPU) и оперативную память (RAM), время аптайма системы и среднюю загрузку (Load Average).",
+    "example": "top -o cpu",
     "tags": [
       "процессы",
       "мониторинг",
-      "память"
+      "cpu",
+      "память",
+      "производительность",
+      "top"
     ],
     "category": "system",
     "section": "1",
     "details": [
-      "git-rebase(1)            - Reapply commits on top of another base tip",
-      "XIconifyWindow(3), XWithdrawWindow(3), XReconfigureWMWindow(3) - manipulate top-level windows",
-      "XkbAddGeomDoodad(3)      - Add one doodad to a section of a keyboard geometry or to the top-level geometry",
-      "XkbComputeShapeTop(3)    - Determines the bounding box of the top surface of a shape",
-      "Toplevel(n)              - base class for mega-widgets in a top-level window",
-      "iotop(1m)                - display top disk I/O events by process. Uses DTrace",
-      "top(1)                   - display sorted information about processes",
-      "topsyscall(1m)           - top syscalls by syscall name. Uses DTrace",
-      "topsysproc(1m)           - top syscalls by process name. Uses DTrace",
-      "Test2::Tools::Spec(3pm)  - RSPEC implementation on top of Test2::Workflow"
+      "top -o cpu",
+      "-o field : Sort processes by specified field (cpu, mem, pid)",
+      "-u user : Display processes for specified user only",
+      "-n number : Number of iterations to update before exit",
+      "Interactive keys: q (quit), k (kill process), M (sort by memory), P (sort by CPU)"
     ]
   },
   {
@@ -28883,17 +28938,24 @@
     "id": 1717,
     "name": "wget",
     "has_desc": true,
-    "primary_desc": "The non-interactive network downloader",
-    "ru_desc": "Инструмент для неинтерактивной загрузки файлов из веб по протоколам HTTP, HTTPS, FTP.",
-    "example": "wget https://example.com/archive.tar.gz",
+    "primary_desc": "Non-interactive network downloader for HTTP, HTTPS, and FTP. Supports resuming interrupted downloads (-c), recursive background retrieval (-r), and mirror downloads.",
+    "ru_desc": "Инструмент неинтерактивной загрузки файлов из сети по протоколам HTTP, HTTPS и FTP. Устойчив к нестабильным соединениям, умеет возобновлять скачивание при обрыве (-c) и рекурсивно скачивать веб-сайты (-r).",
+    "example": "wget -c https://example.com/large-dataset.tar.gz",
     "tags": [
       "скачивание",
-      "сеть"
+      "сеть",
+      "загрузка",
+      "файлы",
+      "wget"
     ],
     "category": "network",
     "section": "1",
     "details": [
-      "Wget(1)                  - The non-interactive network downloader"
+      "wget -c https://example.com/large-dataset.tar.gz",
+      "-c, --continue : Resume getting a partially-downloaded file",
+      "-r, --recursive : Turn on recursive downloading",
+      "-b, --background : Go to background immediately after startup",
+      "-P, --directory-prefix : Save all files to specified directory prefix"
     ]
   },
   {
@@ -30854,6 +30916,56 @@
     "section": "1",
     "details": [
       "zstyle - Zsh shell builtin command or module function: zstyle."
+    ]
+  },
+  {
+    "id": 1835,
+    "name": "docker",
+    "has_desc": true,
+    "primary_desc": "Containerization platform to build, ship, and run applications in isolated environments. Commands include docker run (start containers), docker ps (list active containers), and docker build (create container images).",
+    "ru_desc": "Платформа контейнеризации для сборки, развертывания и запуска приложений в изолированных контейнерах. Команда docker run запускает контейнер из образа, docker ps показывает активные контейнеры, а docker build собирает новые Docker-образы.",
+    "example": "docker run -d -p 8080:80 --name my-web-server nginx:latest",
+    "tags": [
+      "docker",
+      "контейнер",
+      "devops",
+      "деплой",
+      "образ"
+    ],
+    "category": "dev",
+    "section": "1",
+    "details": [
+      "docker run -d -p 8080:80 --name my-web-server nginx:latest",
+      "run : Run a command in a new container (-d detached mode, -p port mapping)",
+      "ps : List active running containers (-a lists all including stopped)",
+      "images : List locally downloaded container images",
+      "exec -it container bash : Execute interactive command in container",
+      "stop / rm : Stop running container or remove container"
+    ]
+  },
+  {
+    "id": 1836,
+    "name": "systemctl",
+    "has_desc": true,
+    "primary_desc": "Central management utility for systemd services and unit files in Linux. Controls starting (start), stopping (stop), restarting (restart), checking status (status), and enabling autostart on boot (enable).",
+    "ru_desc": "Основной инструмент системы инициализации systemd в Linux для управления системными службами (демонами) и юнитами. Позволяет запускать (start), останавливать (stop), перезапускать (restart), смотреть статус (status) и включать автозапуск (enable).",
+    "example": "sudo systemctl status nginx",
+    "tags": [
+      "systemd",
+      "службы",
+      "сервис",
+      "linux",
+      "системный",
+      "systemctl"
+    ],
+    "category": "system",
+    "section": "1",
+    "details": [
+      "sudo systemctl status nginx",
+      "status service : Show runtime status information about service",
+      "start / stop service : Start or stop service immediately",
+      "restart / reload service : Restart or reload configuration without stopping service",
+      "enable / disable service : Enable or disable service autostart at system boot"
     ]
   }
 ]
