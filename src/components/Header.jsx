@@ -266,6 +266,18 @@ export default function Header({
                 </span>
               )}
             </button>
+
+            <button
+              onClick={() => setActiveView('auth')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                activeView === 'auth'
+                  ? 'bg-cyan-500 text-black font-semibold'
+                  : 'text-emerald-400 hover:text-white border border-emerald-500/40 bg-emerald-500/10'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>{t.tabs.auth}</span>
+            </button>
           </div>
 
         </div>

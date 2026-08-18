@@ -16,7 +16,8 @@ export const translations = {
       bookmarks: "Favorites",
       quests: "Quests (200)",
       quiz: "Quiz",
-      speedtyper: "Speed Race"
+      speedtyper: "Speed Race",
+      auth: "Account / Sign In"
     },
 
     // Results Bar & Pagination
@@ -194,7 +195,8 @@ export const translations = {
       bookmarks: "Избранное",
       quests: "Квесты (200)",
       quiz: "Викторина",
-      speedtyper: "Гонка"
+      speedtyper: "Гонка",
+      auth: "Аккаунт / Вход"
     },
 
     // Results Bar & Pagination

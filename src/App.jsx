@@ -13,6 +13,7 @@ import QuizView from './components/QuizView';
 import SpeedTyperView from './components/SpeedTyperView';
 import UserProfileModal from './components/UserProfileModal';
 import AuthModal from './components/AuthModal';
+import AuthView from './components/AuthView';
 import XpToast from './components/XpToast';
 import { translations } from './utils/translations';
 import { searchCommands } from './utils/search';
@@ -424,6 +425,15 @@ export default function App() {
         ) : activeView === 'cheatsheet' ? (
           <CheatSheetView
             onRunInSandbox={handleRunInSandbox}
+            language={language}
+            t={t}
+          />
+        ) : activeView === 'auth' ? (
+          <AuthView
+            authUser={authUser}
+            userStats={userStats}
+            onAuthSuccess={handleAuthSuccess}
+            onLogout={handleLogout}
             language={language}
             t={t}
           />
