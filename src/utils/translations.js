@@ -14,7 +14,7 @@ export const translations = {
       terminal: "Sandbox",
       cheatsheet: "Cheat Sheet",
       bookmarks: "Favorites",
-      quests: "Quests",
+      quests: "Quests (200)",
       quiz: "Quiz",
       speedtyper: "Speed Race"
     },
@@ -89,12 +89,15 @@ export const translations = {
 
     // Quests
     quests: {
-      title: "Interactive Terminal Quests & Challenges",
-      subtitle: "Solve real hands-on terminal tasks inside the virtual environment to level up and earn XP!",
+      title: "200 Interactive Terminal Quests & Lab Challenges",
+      subtitle: "Solve real hands-on terminal tasks categorized into 8 groups and 4 difficulty levels to earn XP!",
       hintButton: "Show Hint",
       checkButton: "Verify Quest",
       completed: "Completed!",
       rewardXp: "+{{xp}} XP Earned!",
+      filterGroupLabel: "Filter by Group:",
+      filterLevelLabel: "Filter by Level:",
+      searchPlaceholder: "Search quest by title or action...",
       allCompletedTitle: "🎉 All Quests Completed!",
       allCompletedDesc: "You are a true Terminal Legend. Great job!"
     },
@@ -171,7 +174,7 @@ export const translations = {
       terminal: "Sandbox",
       cheatsheet: "Шпаргалка",
       bookmarks: "Избранное",
-      quests: "Квесты",
+      quests: "Квесты (200)",
       quiz: "Викторина",
       speedtyper: "Гонка"
     },
@@ -246,12 +249,15 @@ export const translations = {
 
     // Quests
     quests: {
-      title: "Интерактивные Квесты и Лабораторные",
-      subtitle: "Решайте реальные практические задачи в терминале, получайте XP и повышайте свой уровень!",
+      title: "200 Интерактивных Квестов и Лабораторных",
+      subtitle: "Решайте 200 реальных практических задач в терминале, распределенных по 8 группам и 4 уровням сложности!",
       hintButton: "Показать подсказку",
       checkButton: "Проверить квест",
       completed: "Выполнено!",
       rewardXp: "+{{xp}} XP Получено!",
+      filterGroupLabel: "Группа квестов:",
+      filterLevelLabel: "Уровень сложности:",
+      searchPlaceholder: "Поиск квеста по названию или команде...",
       allCompletedTitle: "🎉 Все квесты пройдены!",
       allCompletedDesc: "Вы настоящая Легенда Терминала. Отличная работа!"
     },

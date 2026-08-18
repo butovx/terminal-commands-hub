@@ -1,4 +1,4 @@
-// Virtual File System (VFS) Engine for Terminal Sandbox
+// Virtual File System (VFS) Engine with Rich Pre-populated Environment for 200 Quests
 
 export function createInitialVFS() {
   return {
@@ -10,33 +10,63 @@ export function createInitialVFS() {
           type: 'dir',
           children: {
             'secret_notes.txt': { type: 'file', content: 'CONFIDENTIAL: Project Antigravity API key is active.\nWelcome to Terminal Commands Hub!' },
-            'report.md': { type: 'file', content: '# Quarterly Terminal Report\n- 1800+ commands indexed\n- Zsh & Bash compatibility verified' }
+            'report.md': { type: 'file', content: '# Quarterly Terminal Report\n- 1800+ commands indexed\n- Zsh & Bash compatibility verified' },
+            'notes.txt': { type: 'file', content: 'Meeting notes:\n1. Update server dependencies\n2. Backup database at 00:00\n3. Check system logs' },
+            'budget.csv': { type: 'file', content: 'Category,Amount\nServers,500\nDomains,50\nCDN,120' }
           }
         },
         'projects': {
           type: 'dir',
           children: {
             'app.js': { type: 'file', content: 'console.log("Hello from Terminal Hub Virtual Environment!");' },
-            'README.md': { type: 'file', content: 'Welcome to Terminal Commands Explorer sandbox!' }
+            'package.json': { type: 'file', content: '{\n  "name": "terminal-app",\n  "version": "1.0.0",\n  "main": "app.js"\n}' },
+            'README.md': { type: 'file', content: '# Terminal Project\nWelcome to Terminal Commands Explorer sandbox!' },
+            'src': {
+              type: 'dir',
+              children: {
+                'index.js': { type: 'file', content: '// Main entry point\nimport app from "./app";\nconsole.log("Starting...");' },
+                'utils.js': { type: 'file', content: '// Utility functions\nexport const add = (a, b) => a + b;' }
+              }
+            }
+          }
+        },
+        'git_repo': {
+          type: 'dir',
+          children: {
+            '.git': { type: 'dir', children: { 'HEAD': { type: 'file', content: 'ref: refs/heads/main' } } },
+            'main.py': { type: 'file', content: 'print("Hello Python Git Repo")' },
+            'config.ini': { type: 'file', content: '[database]\nhost=localhost\nport=5432' }
           }
         },
         'logs': {
           type: 'dir',
           children: {
-            'sys.log': { type: 'file', content: '2026-08-18 10:00:00 [INFO] System boot clean.\n2026-08-18 10:02:15 [WARN] High memory usage.\n2026-08-18 10:05:00 [ERROR] Password auth attempt failed for admin.' },
-            'access.log': { type: 'file', content: '127.0.0.1 GET /index.html 200\n127.0.0.1 GET /api/v1/commands 200' }
+            'sys.log': { type: 'file', content: '2026-08-18 10:00:00 [INFO] System boot clean.\n2026-08-18 10:02:15 [WARN] High memory usage.\n2026-08-18 10:05:00 [ERROR] Password auth attempt failed for admin.\n2026-08-18 10:10:00 [CRITICAL] Database connection timeout.' },
+            'access.log': { type: 'file', content: '127.0.0.1 GET /index.html 200\n192.168.1.5 POST /login 401\n127.0.0.1 GET /api/v1/commands 200\n10.0.0.1 GET /admin 403' },
+            'error.log': { type: 'file', content: 'ERROR: NullPointerException in module auth.js\nERROR: Connection refused on port 8080' }
+          }
+        },
+        'downloads': {
+          type: 'dir',
+          children: {
+            'setup.sh': { type: 'file', content: '#!/bin/bash\necho "Running setup..."\nmkdir -p ~/bin' },
+            'data.tar.gz': { type: 'file', content: '[MOCK ARCHIVE DATA]' },
+            'image.png.bak': { type: 'file', content: '[MOCK IMAGE CONTENT]' }
           }
         },
         'tmp': {
           type: 'dir',
           children: {
-            'temp.log': { type: 'file', content: 'Temporary cache file generated during session' }
+            'temp.log': { type: 'file', content: 'Temporary cache file generated during session' },
+            'cache.tmp': { type: 'file', content: 'Cache data v1' },
+            'old_session.txt': { type: 'file', content: 'Session expired' }
           }
         },
         '.config': {
           type: 'dir',
           children: {
-            'zshrc': { type: 'file', content: 'alias ll="ls -la"\nalias g="git"\nexport PATH=$PATH:/usr/local/bin' }
+            'zshrc': { type: 'file', content: 'alias ll="ls -la"\nalias g="git"\nexport PATH=$PATH:/usr/local/bin\nexport EDITOR=vim' },
+            'bashrc': { type: 'file', content: 'export PS1="\\u@\\h:\\w\\$ "' }
           }
         }
       }
@@ -48,22 +78,6 @@ export function formatPath(cwd) {
   return cwd.join('/');
 }
 
-// Navigate to node in tree
-function getNodeAtPath(tree, pathParts) {
-  let curr = tree;
-  if (pathParts[0] === '~') {
-    pathParts = pathParts.slice(1);
-  }
-  for (const part of pathParts) {
-    if (!part || part === '.') continue;
-    if (part === '..') return null; // handled separately
-    if (curr.type !== 'dir' || !curr.children[part]) return null;
-    curr = curr.children[part];
-  }
-  return curr;
-}
-
-// Resolve target path array given cwd
 function resolvePath(cwd, pathStr) {
   if (!pathStr || pathStr === '~') return ['~'];
   const parts = pathStr.split('/').filter(Boolean);
@@ -92,7 +106,6 @@ export function executeVfsCommand(vfsState, inputStr, commandsCatalog = [], lang
   let output = '';
   let action = null;
 
-  // Resolve directory node for current directory
   const getCwdNode = () => {
     let curr = tree;
     for (let i = 1; i < cwd.length; i++) {
@@ -258,8 +271,47 @@ export function executeVfsCommand(vfsState, inputStr, commandsCatalog = [], lang
       action = 'vfs_action';
       break;
     }
+    case 'cp': {
+      if (args.length < 2) {
+        output = 'cp: missing destination file operand';
+      } else {
+        const src = args[0];
+        const dest = args[1];
+        const cwdNode = getCwdNode();
+        const srcNode = cwdNode.children[src];
+        if (!srcNode) {
+          output = `cp: cannot stat '${src}': No such file or directory`;
+        } else {
+          cwdNode.children[dest] = JSON.parse(JSON.stringify(srcNode));
+          output = `Copied ${src} to ${dest}`;
+        }
+      }
+      action = 'vfs_action';
+      break;
+    }
+    case 'mv': {
+      if (args.length < 2) {
+        output = 'mv: missing destination file operand';
+      } else {
+        const src = args[0];
+        const dest = args[1];
+        const cwdNode = getCwdNode();
+        const srcNode = cwdNode.children[src];
+        if (!srcNode) {
+          output = `mv: cannot stat '${src}': No such file or directory`;
+        } else {
+          cwdNode.children[dest] = JSON.parse(JSON.stringify(srcNode));
+          delete cwdNode.children[src];
+          output = `Renamed/moved ${src} to ${dest}`;
+        }
+      }
+      action = 'vfs_action';
+      break;
+    }
     case 'echo': {
       const redirectIdx = args.indexOf('>');
+      const appendIdx = args.indexOf('>>');
+
       if (redirectIdx !== -1) {
         const text = args.slice(0, redirectIdx).join(' ');
         const fileName = args[redirectIdx + 1];
@@ -268,6 +320,17 @@ export function executeVfsCommand(vfsState, inputStr, commandsCatalog = [], lang
         } else {
           const cwdNode = getCwdNode();
           cwdNode.children[fileName] = { type: 'file', content: text };
+          output = '';
+        }
+      } else if (appendIdx !== -1) {
+        const text = args.slice(0, appendIdx).join(' ');
+        const fileName = args[appendIdx + 1];
+        if (!fileName) {
+          output = 'zsh: syntax error near unexpected token \'newline\'';
+        } else {
+          const cwdNode = getCwdNode();
+          const existing = cwdNode.children[fileName]?.content || '';
+          cwdNode.children[fileName] = { type: 'file', content: existing ? `${existing}\n${text}` : text };
           output = '';
         }
       } else {
@@ -309,40 +372,47 @@ export function executeVfsCommand(vfsState, inputStr, commandsCatalog = [], lang
       output = 'Darwin macbook-pro.local 23.4.0 x86_64';
       break;
     }
+    case 'git': {
+      const sub = args[0];
+      if (sub === 'init') {
+        const cwdNode = getCwdNode();
+        cwdNode.children['.git'] = { type: 'dir', children: { 'HEAD': { type: 'file', content: 'ref: refs/heads/main' } } };
+        output = 'Initialized empty Git repository in ' + formatPath(cwd) + '/.git/';
+      } else if (sub === 'status') {
+        output = 'On branch main\nYour branch is up to date with \'origin/main\'.\n\nnothing to commit, working tree clean';
+      } else if (sub === 'log') {
+        output = 'commit a1b2c3d4e5f6 (HEAD -> main)\nAuthor: Dev <user@macbook.local>\nDate:   Tue Aug 18 10:00:00 2026\n\n    feat: initial commit';
+      } else if (sub === 'branch') {
+        output = '* main';
+      } else {
+        output = `git: '${sub}' is simulated git command`;
+      }
+      action = 'vfs_action';
+      break;
+    }
     case 'help': {
       output = language === 'ru'
-        ? `🔥 ВИТУАЛЬНЫЙ ТЕРМИНАЛ ZSH (Интерактивная среда VFS)\n` +
-          `Доступные встроенные команды файловой системы:\n` +
-          `  - pwd               : Вывести текущую директорию\n` +
-          `  - ls [-la] [dir]    : Список файлов и папок\n` +
-          `  - cd [dir]          : Переход по папкам (~, .., /path)\n` +
-          `  - cat [file]        : Просмотр содержимого файла\n` +
-          `  - mkdir [dir]       : Создать новую папку\n` +
-          `  - touch [file]      : Создать пустой файл\n` +
-          `  - rm [-r] [target]  : Удалить файл или директорию\n` +
-          `  - echo "txt" > file : Записать текст в файл\n` +
-          `  - grep [pattern] [f]: Поиск совпадений в файле\n` +
-          `  - whoami / date     : Системная информация\n` +
-          `  - clear             : Очистить консоль\n\n` +
-          `Также поддерживаются подробные справки для всех 1800+ команд каталога!`
-        : `🔥 VIRTUAL ZSH TERMINAL (Interactive VFS Sandbox)\n` +
-          `Available built-in file system commands:\n` +
-          `  - pwd               : Print working directory\n` +
-          `  - ls [-la] [dir]    : List files and directories\n` +
-          `  - cd [dir]          : Navigate directories (~, .., /path)\n` +
-          `  - cat [file]        : View file contents\n` +
-          `  - mkdir [dir]       : Create new folder\n` +
-          `  - touch [file]      : Create empty file\n` +
-          `  - rm [-r] [target]  : Remove file or folder\n` +
-          `  - echo "txt" > file : Write text to file\n` +
-          `  - grep [pattern] [f]: Search pattern in file\n` +
-          `  - whoami / date     : System information\n` +
-          `  - clear             : Clear screen\n\n` +
-          `You can also type any of the 1800+ catalog command names for manual lookup!`;
+        ? `🔥 ВИТУАЛЬНЫЙ ТЕРМИНАЛ ZSH (Интерактивная среда VFS — 200 Квестов)\n` +
+          `Доступные встроенные команды:\n` +
+          `  - pwd, ls [-la], cd [dir], cat [file]\n` +
+          `  - mkdir [dir], touch [file], rm [-r] [file]\n` +
+          `  - cp [src] [dest], mv [src] [dest]\n` +
+          `  - echo "txt" > [file], echo "txt" >> [file]\n` +
+          `  - grep [pattern] [file]\n` +
+          `  - git [init/status/log/branch]\n` +
+          `  - whoami, date, uname, clear, help\n`
+        : `🔥 VIRTUAL ZSH TERMINAL (Interactive VFS — 200 Quests Sandbox)\n` +
+          `Available built-in commands:\n` +
+          `  - pwd, ls [-la], cd [dir], cat [file]\n` +
+          `  - mkdir [dir], touch [file], rm [-r] [file]\n` +
+          `  - cp [src] [dest], mv [src] [dest]\n` +
+          `  - echo "txt" > [file], echo "txt" >> [file]\n` +
+          `  - grep [pattern] [file]\n` +
+          `  - git [init/status/log/branch]\n` +
+          `  - whoami, date, uname, clear, help\n`;
       break;
     }
     default: {
-      // Look up in catalog commandsData
       const match = commandsCatalog.find(c => c.name.toLowerCase() === cmd);
       if (match) {
         const desc = language === 'ru' ? (match.ru_desc || match.primary_desc) : match.primary_desc;
@@ -364,7 +434,7 @@ export function autocompleteVfs(vfsState, currentInput) {
   const parts = currentInput.split(' ');
   const lastPart = parts[parts.length - 1] || '';
 
-  const builtins = ['pwd', 'ls', 'cd', 'cat', 'mkdir', 'touch', 'rm', 'echo', 'grep', 'whoami', 'date', 'clear', 'help', 'history', 'uname'];
+  const builtins = ['pwd', 'ls', 'cd', 'cat', 'mkdir', 'touch', 'rm', 'cp', 'mv', 'echo', 'grep', 'git', 'whoami', 'date', 'clear', 'help', 'uname'];
 
   if (parts.length === 1) {
     const matches = builtins.filter(b => b.startsWith(lastPart.toLowerCase()));
@@ -374,7 +444,6 @@ export function autocompleteVfs(vfsState, currentInput) {
     return currentInput;
   }
 
-  // File/dir completion
   let { cwd, tree } = vfsState;
   let dirNode = tree;
   for (let i = 1; i < cwd.length; i++) {
