@@ -80,17 +80,71 @@ export default function App() {
     }
   });
 
+  // Gamification XP Handler
+  const handleEarnXp = useCallback((amount, reason, badgeId = null) => {
+    setUserStats(prev => {
+      const currentXp = typeof prev?.xp === 'number' && !isNaN(prev.xp) ? prev.xp : 0;
+      const oldLevelInfo = getCurrentLevelInfo(currentXp);
+      const newXp = currentXp + amount;
+      const newLevelInfo = getCurrentLevelInfo(newXp);
+
+      const prevBadges = Array.isArray(prev?.unlockedBadges) ? prev.unlockedBadges : [];
+      const newBadges = [...prevBadges];
+
+      if (badgeId && BADGES[badgeId] && !newBadges.includes(badgeId)) {
+        newBadges.push(badgeId);
+      }
+
+      if (newLevelInfo.current.level >= 5 && !newBadges.includes('level_5_master')) {
+        newBadges.push('level_5_master');
+      }
+
+      const updated = {
+        ...prev,
+        xp: newXp,
+        level: newLevelInfo.current.level,
+        unlockedBadges: newBadges
+      };
+
+      saveUserStats(updated);
+
+      if (newLevelInfo.current.level > oldLevelInfo.current.level) {
+        setActiveToast({
+          type: 'levelup',
+          title: `🎉 LEVEL UP! Level ${newLevelInfo.current.level}`,
+          message: `Rank: ${language === 'ru' ? newLevelInfo.current.titleRu : newLevelInfo.current.titleEn}`
+        });
+      } else if (badgeId && BADGES[badgeId] && !prevBadges.includes(badgeId)) {
+        const b = BADGES[badgeId];
+        setActiveToast({
+          type: 'badge',
+          title: `🏆 Badge Unlocked: ${b.icon} ${language === 'ru' ? b.nameRu : b.nameEn}`,
+          message: `+${amount} XP (${reason})`
+        });
+      } else {
+        setActiveToast({
+          type: 'xp',
+          title: `+${amount} XP Earned!`,
+          message: reason
+        });
+      }
+
+      return updated;
+    });
+  }, [language]);
+
   useEffect(() => {
     try {
       localStorage.setItem('terminal_bookmarks', JSON.stringify(Array.from(bookmarkedIds)));
 
-      if (bookmarkedIds.size >= 5 && !userStats.unlockedBadges.includes('bookmark_collector')) {
+      const badges = Array.isArray(userStats?.unlockedBadges) ? userStats.unlockedBadges : [];
+      if (bookmarkedIds.size >= 5 && !badges.includes('bookmark_collector')) {
         handleEarnXp(25, 'Bookmarked 5 commands', 'bookmark_collector');
       }
     } catch (err) {
       console.error(err);
     }
-  }, [bookmarkedIds]);
+  }, [bookmarkedIds, userStats, handleEarnXp]);
 
   // Fetch D1 remote progress on auth login
   const handleAuthSuccess = async (user) => {
@@ -99,19 +153,21 @@ export default function App() {
 
     if (remote) {
       setUserStats(prev => {
+        const prevBadges = Array.isArray(prev?.unlockedBadges) ? prev.unlockedBadges : [];
+        const remoteBadges = Array.isArray(remote?.unlockedBadges) ? remote.unlockedBadges : [];
         const merged = {
           ...prev,
-          xp: Math.max(prev.xp, remote.xp || 0),
-          level: Math.max(prev.level, remote.level || 1),
-          streak: Math.max(prev.streak, remote.streak || 1),
-          unlockedBadges: Array.from(new Set([...prev.unlockedBadges, ...(remote.unlockedBadges || [])])),
-          stats: { ...prev.stats, ...(remote.stats || {}) }
+          xp: Math.max(prev?.xp || 0, remote.xp || 0),
+          level: Math.max(prev?.level || 1, remote.level || 1),
+          streak: Math.max(prev?.streak || 1, remote.streak || 1),
+          unlockedBadges: Array.from(new Set([...prevBadges, ...remoteBadges])),
+          stats: { ...(prev?.stats || {}), ...(remote.stats || {}) }
         };
         saveUserStats(merged);
         return merged;
       });
 
-      if (remote.bookmarks && remote.bookmarks.length > 0) {
+      if (Array.isArray(remote.bookmarks) && remote.bookmarks.length > 0) {
         setBookmarkedIds(prev => new Set([...Array.from(prev), ...remote.bookmarks]));
       }
     }
@@ -160,56 +216,6 @@ export default function App() {
     setSandboxCommand(cmd);
     setActiveView('terminal');
   };
-
-  // Gamification XP Handler
-  const handleEarnXp = useCallback((amount, reason, badgeId = null) => {
-    setUserStats(prev => {
-      const oldLevelInfo = getCurrentLevelInfo(prev.xp);
-      const newXp = prev.xp + amount;
-      const newLevelInfo = getCurrentLevelInfo(newXp);
-
-      const newBadges = [...prev.unlockedBadges];
-      if (badgeId && BADGES[badgeId] && !newBadges.includes(badgeId)) {
-        newBadges.push(badgeId);
-      }
-
-      if (newLevelInfo.current.level >= 5 && !newBadges.includes('level_5_master')) {
-        newBadges.push('level_5_master');
-      }
-
-      const updated = {
-        ...prev,
-        xp: newXp,
-        level: newLevelInfo.current.level,
-        unlockedBadges: newBadges
-      };
-
-      saveUserStats(updated);
-
-      if (newLevelInfo.current.level > oldLevelInfo.current.level) {
-        setActiveToast({
-          type: 'levelup',
-          title: `🎉 LEVEL UP! Level ${newLevelInfo.current.level}`,
-          message: `Rank: ${language === 'ru' ? newLevelInfo.current.titleRu : newLevelInfo.current.titleEn}`
-        });
-      } else if (badgeId && BADGES[badgeId] && !prev.unlockedBadges.includes(badgeId)) {
-        const b = BADGES[badgeId];
-        setActiveToast({
-          type: 'badge',
-          title: `🏆 Badge Unlocked: ${b.icon} ${language === 'ru' ? b.nameRu : b.nameEn}`,
-          message: `+${amount} XP (${reason})`
-        });
-      } else {
-        setActiveToast({
-          type: 'xp',
-          title: `+${amount} XP Earned!`,
-          message: reason
-        });
-      }
-
-      return updated;
-    });
-  }, [language]);
 
   const categoryCounts = useMemo(() => {
     const counts = { all: commandsData.length };

@@ -109,13 +109,19 @@ export function getDefaultStats() {
 export function loadUserStats() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return checkAndUpdateStreak(getDefaultStats());
-    const parsed = JSON.parse(raw);
-    return checkAndUpdateStreak({
-      ...getDefaultStats(),
+    const defaults = getDefaultStats();
+    if (!raw) return checkAndUpdateStreak(defaults);
+    const parsed = JSON.parse(raw) || {};
+    const sanitized = {
+      ...defaults,
       ...parsed,
-      stats: { ...getDefaultStats().stats, ...(parsed.stats || {}) }
-    });
+      xp: typeof parsed.xp === 'number' && !isNaN(parsed.xp) ? parsed.xp : 0,
+      level: typeof parsed.level === 'number' && !isNaN(parsed.level) ? parsed.level : 1,
+      unlockedBadges: Array.isArray(parsed.unlockedBadges) ? parsed.unlockedBadges : [],
+      streak: typeof parsed.streak === 'number' && !isNaN(parsed.streak) ? parsed.streak : 1,
+      stats: { ...defaults.stats, ...(parsed.stats || {}) }
+    };
+    return checkAndUpdateStreak(sanitized);
   } catch (err) {
     console.error('Error loading gamification stats:', err);
     return getDefaultStats();
@@ -130,12 +136,13 @@ export function saveUserStats(stats) {
   }
 }
 
-export function getCurrentLevelInfo(xp) {
+export function getCurrentLevelInfo(xp = 0) {
+  const safeXp = typeof xp === 'number' && !isNaN(xp) ? xp : 0;
   let current = LEVEL_THRESHOLDS[0];
   let next = LEVEL_THRESHOLDS[1];
 
   for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
-    if (xp >= LEVEL_THRESHOLDS[i].xp) {
+    if (safeXp >= LEVEL_THRESHOLDS[i].xp) {
       current = LEVEL_THRESHOLDS[i];
       next = LEVEL_THRESHOLDS[i + 1] || null;
     }
@@ -143,9 +150,9 @@ export function getCurrentLevelInfo(xp) {
 
   const currentLevelXp = current.xp;
   const nextLevelXp = next ? next.xp : current.xp;
-  const xpInLevel = xp - currentLevelXp;
-  const levelXpRequired = nextLevelXp - currentLevelXp;
-  const progressPercent = next ? Math.min(100, Math.floor((xpInLevel / (levelXpRequired || 1)) * 100)) : 100;
+  const xpInLevel = Math.max(0, safeXp - currentLevelXp);
+  const levelXpRequired = Math.max(1, nextLevelXp - currentLevelXp);
+  const progressPercent = next ? Math.min(100, Math.floor((xpInLevel / levelXpRequired) * 100)) : 100;
 
   return {
     current,
@@ -157,15 +164,22 @@ export function getCurrentLevelInfo(xp) {
 }
 
 function checkAndUpdateStreak(stats) {
-  const today = new Date().toISOString().split('T')[0];
-  if (stats.lastActiveDate === today) return stats;
+  const safeStats = {
+    ...getDefaultStats(),
+    ...stats,
+    unlockedBadges: Array.isArray(stats?.unlockedBadges) ? stats.unlockedBadges : [],
+    stats: { ...getDefaultStats().stats, ...(stats?.stats || {}) }
+  };
 
-  const lastDate = new Date(stats.lastActiveDate);
+  const today = new Date().toISOString().split('T')[0];
+  if (safeStats.lastActiveDate === today) return safeStats;
+
+  const lastDate = new Date(safeStats.lastActiveDate || today);
   const currentDate = new Date(today);
   const diffTime = Math.abs(currentDate - lastDate);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  let newStreak = stats.streak;
+  let newStreak = safeStats.streak || 1;
   if (diffDays === 1) {
     newStreak += 1;
   } else if (diffDays > 1) {
@@ -173,7 +187,7 @@ function checkAndUpdateStreak(stats) {
   }
 
   const updated = {
-    ...stats,
+    ...safeStats,
     streak: newStreak,
     lastActiveDate: today
   };
