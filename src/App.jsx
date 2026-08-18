@@ -12,7 +12,6 @@ import QuestsView from './components/QuestsView';
 import QuizView from './components/QuizView';
 import SpeedTyperView from './components/SpeedTyperView';
 import UserProfileModal from './components/UserProfileModal';
-import AuthModal from './components/AuthModal';
 import AuthView from './components/AuthView';
 import XpToast from './components/XpToast';
 import { translations } from './utils/translations';
@@ -46,7 +45,6 @@ export default function App() {
   const [userStats, setUserStats] = useState(() => loadUserStats());
   const [authUser, setAuthUser] = useState(() => getStoredAuth().user);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [activeToast, setActiveToast] = useState(null);
 
   // Sync language selection
@@ -270,9 +268,6 @@ export default function App() {
         t={t}
         userStats={userStats}
         authUser={authUser}
-        onOpenProfile={() => setShowProfileModal(true)}
-        onOpenAuth={() => setShowAuthModal(true)}
-        onLogout={handleLogout}
       />
 
       {/* Main Container */}
@@ -471,18 +466,8 @@ export default function App() {
           userStats={userStats}
           authUser={authUser}
           onClose={() => setShowProfileModal(false)}
-          onOpenAuth={() => setShowAuthModal(true)}
+          onOpenAuth={() => { setShowProfileModal(false); setActiveView('auth'); }}
           onLogout={handleLogout}
-          language={language}
-          t={t}
-        />
-      )}
-
-      {/* Auth Modal */}
-      {showAuthModal && (
-        <AuthModal
-          onClose={() => setShowAuthModal(false)}
-          onAuthSuccess={handleAuthSuccess}
           language={language}
           t={t}
         />

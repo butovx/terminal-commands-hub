@@ -30,10 +30,7 @@ export default function Header({
   setLanguage,
   t,
   userStats,
-  authUser,
-  onOpenProfile,
-  onOpenAuth,
-  onLogout
+  authUser
 }) {
   const searchInputRef = useRef(null);
 
@@ -77,10 +74,10 @@ export default function Header({
               </div>
             </div>
 
-            {/* Gamification Level Pill */}
+            {/* Gamification Level Pill -> Navigates to Single Auth & Profile Tab */}
             {userStats && levelInfo && (
               <button
-                onClick={onOpenProfile}
+                onClick={() => setActiveView('auth')}
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0d1117] border border-emerald-500/40 hover:border-emerald-400 text-xs font-mono transition-all shadow-sm"
               >
                 <span>{levelInfo.current.badge}</span>
@@ -90,28 +87,6 @@ export default function Header({
                   <Flame className="w-3 h-3 fill-amber-400 mr-0.5" />
                   {userStats.streak}d
                 </span>
-              </button>
-            )}
-
-            {/* Auth / D1 Sync Button */}
-            {authUser ? (
-              <div className="flex items-center gap-1 bg-[#0d1117] px-2.5 py-1 rounded-lg border border-cyan-500/40 text-xs font-mono">
-                <UserCheck className="w-3.5 h-3.5 text-cyan-400" />
-                <span className="text-white font-bold">{authUser.username}</span>
-                <button
-                  onClick={onLogout}
-                  className="ml-1 text-[10px] text-gray-400 hover:text-red-400 transition-all underline"
-                >
-                  {t.auth.logout}
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={onOpenAuth}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/40 hover:bg-emerald-500/20 text-xs font-mono text-emerald-400 font-bold transition-all"
-              >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>{t.auth.loginTab}</span>
               </button>
             )}
 
@@ -164,7 +139,7 @@ export default function Header({
             </div>
           </div>
 
-          {/* Interactive View Tabs */}
+          {/* Main View Navigation Tabs */}
           <div className="flex flex-wrap items-center gap-1 bg-[#0d1117] p-1 rounded-lg border border-[#30363d] w-full md:w-auto justify-center">
             <button
               onClick={() => setActiveView('grid')}
@@ -267,16 +242,19 @@ export default function Header({
               )}
             </button>
 
+            {/* SINGLE AUTH TAB */}
             <button
               onClick={() => setActiveView('auth')}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
                 activeView === 'auth'
                   ? 'bg-cyan-500 text-black font-semibold'
-                  : 'text-emerald-400 hover:text-white border border-emerald-500/40 bg-emerald-500/10'
+                  : authUser
+                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/40'
+                    : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/40'
               }`}
             >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>{t.tabs.auth}</span>
+              {authUser ? <UserCheck className="w-3.5 h-3.5" /> : <LogIn className="w-3.5 h-3.5" />}
+              <span>{authUser ? authUser.username : t.tabs.auth}</span>
             </button>
           </div>
 
