@@ -217,19 +217,25 @@ export default function App() {
     setActiveView('terminal');
   };
 
-  const categoryCounts = useMemo(() => {
-    const counts = { all: commandsData.length };
-    commandsData.forEach((cmd) => {
-      counts[cmd.category] = (counts[cmd.category] || 0) + 1;
-    });
-    return counts;
+  const allCommands = useMemo(() => {
+    return Array.isArray(commandsData) ? commandsData : (commandsData?.default || []);
   }, []);
 
+  const categoryCounts = useMemo(() => {
+    const counts = { all: allCommands.length };
+    allCommands.forEach((cmd) => {
+      if (cmd && cmd.category) {
+        counts[cmd.category] = (counts[cmd.category] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [allCommands]);
+
   const filteredCommands = useMemo(() => {
-    let result = searchCommands(commandsData, debouncedSearchTerm);
+    let result = searchCommands(allCommands, debouncedSearchTerm);
 
     if (selectedCategory !== 'all') {
-      result = result.filter(cmd => cmd.category === selectedCategory);
+      result = result.filter(cmd => cmd && cmd.category === selectedCategory);
     }
 
     if (sortBy === 'name_asc') {
@@ -241,7 +247,7 @@ export default function App() {
     }
 
     return result;
-  }, [debouncedSearchTerm, selectedCategory, sortBy]);
+  }, [allCommands, debouncedSearchTerm, selectedCategory, sortBy]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -254,8 +260,8 @@ export default function App() {
   }, [filteredCommands, currentPage]);
 
   const bookmarkedCommands = useMemo(() => {
-    return commandsData.filter(c => bookmarkedIds.has(c.id));
-  }, [bookmarkedIds]);
+    return allCommands.filter(c => c && bookmarkedIds.has(c.id));
+  }, [allCommands, bookmarkedIds]);
 
   return (
     <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] font-sans pb-12">
@@ -267,7 +273,7 @@ export default function App() {
         activeView={activeView}
         setActiveView={setActiveView}
         bookmarksCount={bookmarkedIds.size}
-        totalCount={commandsData.length}
+        totalCount={allCommands.length}
         filteredCount={filteredCommands.length}
         language={language}
         setLanguage={setLanguage}
@@ -399,14 +405,14 @@ export default function App() {
         ) : activeView === 'terminal' ? (
           <TerminalSandbox
             initialCommand={sandboxCommand}
-            commands={commandsData}
+            commands={allCommands}
             language={language}
             t={t}
             onEarnXp={handleEarnXp}
           />
         ) : activeView === 'quests' ? (
           <QuestsView
-            commands={commandsData}
+            commands={allCommands}
             onEarnXp={handleEarnXp}
             language={language}
             t={t}

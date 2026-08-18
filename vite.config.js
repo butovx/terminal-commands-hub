@@ -6,18 +6,14 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    allowedHosts: true,
-    hmr: {
-      clientPort: 443
-    }
+    allowedHosts: true
   },
   build: {
-    chunkSizeWarningLimit: 1600,
+    chunkSizeWarningLimit: 2500,
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'lucide-react'],
-          commandsData: ['./src/data/commands.json']
+          vendor: ['react', 'react-dom', 'lucide-react']
         }
       }
     }
