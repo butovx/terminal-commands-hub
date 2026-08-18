@@ -142,6 +142,24 @@ export const translations = {
       bestWpm: "Best Typing Speed"
     },
 
+    // Auth
+    auth: {
+      loginTab: "Sign In",
+      registerTab: "Sign Up",
+      loginTitle: "Welcome Back",
+      registerTitle: "Create Account",
+      subtext: "Sync your terminal progress across devices with Cloudflare D1",
+      loginLabel: "Username or Email",
+      usernameLabel: "Username",
+      emailLabel: "Email Address",
+      passwordLabel: "Password",
+      loginButton: "Sign In",
+      registerButton: "Create Account",
+      guestMode: "Guest",
+      syncOnline: "D1 Cloud Synced",
+      logout: "Log Out"
+    },
+
     // Cheat Sheet
     cheatsheet: {
       bannerTitle: "Terminal Cheat Sheet",
@@ -300,6 +318,24 @@ export const translations = {
       questsDone: "Пройдено квестов",
       quizzesDone: "Завершено викторин",
       bestWpm: "Лучшая скорость набора"
+    },
+
+    // Auth
+    auth: {
+      loginTab: "Вход",
+      registerTab: "Регистрация",
+      loginTitle: "С возвращением",
+      registerTitle: "Создать аккаунт",
+      subtext: "Синхронизируйте прогресс терминала между устройствами через Cloudflare D1",
+      loginLabel: "Логин или Email",
+      usernameLabel: "Имя пользователя",
+      emailLabel: "Электронная почта",
+      passwordLabel: "Пароль",
+      loginButton: "Войти",
+      registerButton: "Зарегистрироваться",
+      guestMode: "Гость",
+      syncOnline: "D1 Cloud Облако",
+      logout: "Выйти"
     },
 
     // Cheat Sheet

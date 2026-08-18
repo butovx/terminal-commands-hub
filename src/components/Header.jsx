@@ -13,7 +13,9 @@ import {
   Award,
   Brain,
   Zap,
-  Flame
+  Flame,
+  UserCheck,
+  LogIn
 } from 'lucide-react';
 
 export default function Header({
@@ -28,7 +30,10 @@ export default function Header({
   setLanguage,
   t,
   userStats,
-  onOpenProfile
+  authUser,
+  onOpenProfile,
+  onOpenAuth,
+  onLogout
 }) {
   const searchInputRef = useRef(null);
 
@@ -54,7 +59,7 @@ export default function Header({
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           
           {/* Brand Logo & Language Switcher & Profile Level Pill */}
-          <div className="flex items-center justify-between w-full md:w-auto gap-3">
+          <div className="flex flex-wrap items-center justify-between w-full md:w-auto gap-3">
             <div
               className="flex items-center gap-2.5 cursor-pointer group"
               onClick={() => setActiveView('grid')}
@@ -72,7 +77,7 @@ export default function Header({
               </div>
             </div>
 
-            {/* User Gamification Profile Pill */}
+            {/* Gamification Level Pill */}
             {userStats && levelInfo && (
               <button
                 onClick={onOpenProfile}
@@ -85,6 +90,28 @@ export default function Header({
                   <Flame className="w-3 h-3 fill-amber-400 mr-0.5" />
                   {userStats.streak}d
                 </span>
+              </button>
+            )}
+
+            {/* Auth / D1 Sync Button */}
+            {authUser ? (
+              <div className="flex items-center gap-1 bg-[#0d1117] px-2.5 py-1 rounded-lg border border-cyan-500/40 text-xs font-mono">
+                <UserCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-white font-bold">{authUser.username}</span>
+                <button
+                  onClick={onLogout}
+                  className="ml-1 text-[10px] text-gray-400 hover:text-red-400 transition-all underline"
+                >
+                  {t.auth.logout}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuth}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/40 hover:bg-emerald-500/20 text-xs font-mono text-emerald-400 font-bold transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>{t.auth.loginTab}</span>
               </button>
             )}
 

@@ -1,0 +1,8 @@
+name = "terminal-commands-hub"
+pages_build_output_dir = "./dist"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "terminal_hub_db"
+database_id = "terminal_hub_db_id"

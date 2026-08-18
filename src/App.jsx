@@ -12,10 +12,12 @@ import QuestsView from './components/QuestsView';
 import QuizView from './components/QuizView';
 import SpeedTyperView from './components/SpeedTyperView';
 import UserProfileModal from './components/UserProfileModal';
+import AuthModal from './components/AuthModal';
 import XpToast from './components/XpToast';
 import { translations } from './utils/translations';
 import { searchCommands } from './utils/search';
 import { loadUserStats, saveUserStats, getCurrentLevelInfo, BADGES } from './utils/gamification';
+import { getStoredAuth, clearAuthSession, fetchRemoteProgress, syncProgressToRemote } from './utils/auth';
 import { ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 
 const PAGE_SIZE = 36;
@@ -39,9 +41,11 @@ export default function App() {
   const [sandboxCommand, setSandboxCommand] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Gamification & Profile Modal
+  // Gamification & Auth State
   const [userStats, setUserStats] = useState(() => loadUserStats());
+  const [authUser, setAuthUser] = useState(() => getStoredAuth().user);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [activeToast, setActiveToast] = useState(null);
 
   // Sync language selection
@@ -81,7 +85,6 @@ export default function App() {
     try {
       localStorage.setItem('terminal_bookmarks', JSON.stringify(Array.from(bookmarkedIds)));
 
-      // Check bookmark collector achievement
       if (bookmarkedIds.size >= 5 && !userStats.unlockedBadges.includes('bookmark_collector')) {
         handleEarnXp(25, 'Bookmarked 5 commands', 'bookmark_collector');
       }
@@ -89,6 +92,54 @@ export default function App() {
       console.error(err);
     }
   }, [bookmarkedIds]);
+
+  // Fetch D1 remote progress on auth login
+  const handleAuthSuccess = async (user) => {
+    setAuthUser(user);
+    const remote = await fetchRemoteProgress();
+
+    if (remote) {
+      setUserStats(prev => {
+        const merged = {
+          ...prev,
+          xp: Math.max(prev.xp, remote.xp || 0),
+          level: Math.max(prev.level, remote.level || 1),
+          streak: Math.max(prev.streak, remote.streak || 1),
+          unlockedBadges: Array.from(new Set([...prev.unlockedBadges, ...(remote.unlockedBadges || [])])),
+          stats: { ...prev.stats, ...(remote.stats || {}) }
+        };
+        saveUserStats(merged);
+        return merged;
+      });
+
+      if (remote.bookmarks && remote.bookmarks.length > 0) {
+        setBookmarkedIds(prev => new Set([...Array.from(prev), ...remote.bookmarks]));
+      }
+    }
+
+    setActiveToast({
+      type: 'badge',
+      title: `Welcome ${user.username}!`,
+      message: 'Cloud progress synced with Cloudflare D1 Database.'
+    });
+  };
+
+  const handleLogout = () => {
+    clearAuthSession();
+    setAuthUser(null);
+    setActiveToast({
+      type: 'xp',
+      title: 'Logged Out',
+      message: 'Switched to guest mode (localStorage).'
+    });
+  };
+
+  // Sync to D1 whenever userStats or bookmarks change
+  useEffect(() => {
+    if (authUser) {
+      syncProgressToRemote(userStats, Array.from(bookmarkedIds));
+    }
+  }, [userStats, bookmarkedIds, authUser]);
 
   const toggleBookmark = (id) => {
     setBookmarkedIds((prev) => {
@@ -136,7 +187,6 @@ export default function App() {
 
       saveUserStats(updated);
 
-      // Toast dispatch
       if (newLevelInfo.current.level > oldLevelInfo.current.level) {
         setActiveToast({
           type: 'levelup',
@@ -218,7 +268,10 @@ export default function App() {
         setLanguage={setLanguage}
         t={t}
         userStats={userStats}
+        authUser={authUser}
         onOpenProfile={() => setShowProfileModal(true)}
+        onOpenAuth={() => setShowAuthModal(true)}
+        onLogout={handleLogout}
       />
 
       {/* Main Container */}
@@ -407,6 +460,16 @@ export default function App() {
         <UserProfileModal
           userStats={userStats}
           onClose={() => setShowProfileModal(false)}
+          language={language}
+          t={t}
+        />
+      )}
+
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          onAuthSuccess={handleAuthSuccess}
           language={language}
           t={t}
         />
