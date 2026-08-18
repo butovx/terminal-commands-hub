@@ -18,7 +18,13 @@ export default class ErrorBoundary extends React.Component {
   handleReset = () => {
     try {
       localStorage.removeItem('terminal_user_stats');
-    } catch {}
+      localStorage.removeItem('terminal_bookmarks');
+      localStorage.removeItem('terminal_auth_token');
+      localStorage.removeItem('terminal_auth_user');
+      localStorage.removeItem('terminal_language');
+    } catch (e) {
+      console.error(e);
+    }
     window.location.reload();
   };
 
@@ -31,9 +37,9 @@ export default class ErrorBoundary extends React.Component {
               <AlertCircle className="w-6 h-6 text-red-400" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white font-mono">Application Recovered</h2>
+              <h2 className="text-lg font-bold text-white font-mono">TerminalHub Recovered</h2>
               <p className="text-xs text-gray-400 mt-1 font-mono">
-                An unexpected state error occurred. Click below to refresh the application cleanly.
+                Click below to clear corrupted browser cache and load the application cleanly.
               </p>
             </div>
             <button
@@ -41,7 +47,7 @@ export default class ErrorBoundary extends React.Component {
               className="px-5 py-2.5 bg-emerald-500 text-black font-mono text-xs font-bold rounded-xl shadow hover:opacity-90 transition-all flex items-center justify-center gap-2 mx-auto"
             >
               <RotateCcw className="w-4 h-4" />
-              Reset & Reload TerminalHub
+              Reset Cache & Reload Site
             </button>
           </div>
         </div>

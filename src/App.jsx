@@ -74,7 +74,9 @@ export default function App() {
   const [bookmarkedIds, setBookmarkedIds] = useState(() => {
     try {
       const saved = localStorage.getItem('terminal_bookmarks');
-      return saved ? new Set(JSON.parse(saved)) : new Set();
+      if (!saved) return new Set();
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? new Set(parsed) : new Set();
     } catch {
       return new Set();
     }

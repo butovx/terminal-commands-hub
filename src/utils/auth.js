@@ -7,8 +7,14 @@ export function getStoredAuth() {
   try {
     const token = localStorage.getItem(TOKEN_KEY);
     const userRaw = localStorage.getItem(USER_KEY);
-    const user = userRaw ? JSON.parse(userRaw) : null;
-    return { token, user };
+    let user = null;
+    if (userRaw) {
+      const parsed = JSON.parse(userRaw);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed) && parsed.username) {
+        user = parsed;
+      }
+    }
+    return { token: typeof token === 'string' ? token : null, user };
   } catch {
     return { token: null, user: null };
   }
@@ -16,8 +22,10 @@ export function getStoredAuth() {
 
 export function saveAuthSession(token, user) {
   try {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    if (token && user) {
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
   } catch (err) {
     console.error('Error saving auth session:', err);
   }
@@ -46,8 +54,8 @@ export async function verifySession() {
     if (!res.ok) {
       return getStoredAuth().user;
     }
-    const data = await res.json();
-    if (data.user) {
+    const data = await res.json().catch(() => null);
+    if (data && data.user) {
       saveAuthSession(token, data.user);
       return data.user;
     }
@@ -71,7 +79,6 @@ export async function registerUser({ username, email, password }) {
       if (data && data.error) {
         throw new Error(data.error);
       }
-      // If server returned non-JSON error (e.g. static fallback page), create local session
       return createLocalSession(username, email);
     }
 
@@ -83,11 +90,9 @@ export async function registerUser({ username, email, password }) {
     return createLocalSession(username, email);
 
   } catch (err) {
-    // If explicit validation error from backend (e.g. user already exists), re-throw
     if (err.message && !err.message.includes('fetch') && !err.message.includes('Load failed') && !err.message.includes('NetworkError')) {
       throw err;
     }
-    // Network or static host fallback: create seamless local session
     return createLocalSession(username, email);
   }
 }

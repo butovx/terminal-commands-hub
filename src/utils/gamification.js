@@ -111,7 +111,10 @@ export function loadUserStats() {
     const raw = localStorage.getItem(STORAGE_KEY);
     const defaults = getDefaultStats();
     if (!raw) return checkAndUpdateStreak(defaults);
-    const parsed = JSON.parse(raw) || {};
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return checkAndUpdateStreak(defaults);
+    }
     const sanitized = {
       ...defaults,
       ...parsed,
@@ -119,7 +122,7 @@ export function loadUserStats() {
       level: typeof parsed.level === 'number' && !isNaN(parsed.level) ? parsed.level : 1,
       unlockedBadges: Array.isArray(parsed.unlockedBadges) ? parsed.unlockedBadges : [],
       streak: typeof parsed.streak === 'number' && !isNaN(parsed.streak) ? parsed.streak : 1,
-      stats: { ...defaults.stats, ...(parsed.stats || {}) }
+      stats: { ...defaults.stats, ...(parsed.stats && typeof parsed.stats === 'object' ? parsed.stats : {}) }
     };
     return checkAndUpdateStreak(sanitized);
   } catch (err) {
@@ -130,7 +133,9 @@ export function loadUserStats() {
 
 export function saveUserStats(stats) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    if (stats && typeof stats === 'object') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    }
   } catch (err) {
     console.error('Error saving gamification stats:', err);
   }
