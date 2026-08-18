@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import commandsData from './data/commands.json';
 import Header from './components/Header';
 import CategoryFilter from './components/CategoryFilter';
@@ -8,8 +8,14 @@ import CommandDetailModal from './components/CommandDetailModal';
 import TerminalSandbox from './components/TerminalSandbox';
 import CheatSheetView from './components/CheatSheetView';
 import BookmarksView from './components/BookmarksView';
+import QuestsView from './components/QuestsView';
+import QuizView from './components/QuizView';
+import SpeedTyperView from './components/SpeedTyperView';
+import UserProfileModal from './components/UserProfileModal';
+import XpToast from './components/XpToast';
 import { translations } from './utils/translations';
 import { searchCommands } from './utils/search';
+import { loadUserStats, saveUserStats, getCurrentLevelInfo, BADGES } from './utils/gamification';
 import { ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 
 const PAGE_SIZE = 36;
@@ -33,14 +39,19 @@ export default function App() {
   const [sandboxCommand, setSandboxCommand] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Sync language selection to localStorage & document title / lang attribute
+  // Gamification & Profile Modal
+  const [userStats, setUserStats] = useState(() => loadUserStats());
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [activeToast, setActiveToast] = useState(null);
+
+  // Sync language selection
   useEffect(() => {
     try {
       localStorage.setItem('terminal_language', language);
       document.documentElement.lang = language;
       document.title = language === 'ru'
-        ? 'Terminal Commands Explorer | База терминальных команд macOS/Linux'
-        : 'Terminal Commands Explorer | macOS & Linux Command Reference';
+        ? 'Terminal Commands Hub | Геймифицированный справочник macOS/Linux'
+        : 'Terminal Commands Hub | Gamified macOS & Linux Reference';
     } catch (err) {
       console.error(err);
     }
@@ -48,7 +59,7 @@ export default function App() {
 
   const t = translations[language] || translations.en;
 
-  // Debounce search input for silky-smooth typing & zero lag
+  // Debounce search
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -56,7 +67,7 @@ export default function App() {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Bookmarks in localStorage
+  // Bookmarks
   const [bookmarkedIds, setBookmarkedIds] = useState(() => {
     try {
       const saved = localStorage.getItem('terminal_bookmarks');
@@ -69,6 +80,11 @@ export default function App() {
   useEffect(() => {
     try {
       localStorage.setItem('terminal_bookmarks', JSON.stringify(Array.from(bookmarkedIds)));
+
+      // Check bookmark collector achievement
+      if (bookmarkedIds.size >= 5 && !userStats.unlockedBadges.includes('bookmark_collector')) {
+        handleEarnXp(25, 'Bookmarked 5 commands', 'bookmark_collector');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -95,6 +111,57 @@ export default function App() {
     setActiveView('terminal');
   };
 
+  // Gamification XP Handler
+  const handleEarnXp = useCallback((amount, reason, badgeId = null) => {
+    setUserStats(prev => {
+      const oldLevelInfo = getCurrentLevelInfo(prev.xp);
+      const newXp = prev.xp + amount;
+      const newLevelInfo = getCurrentLevelInfo(newXp);
+
+      const newBadges = [...prev.unlockedBadges];
+      if (badgeId && BADGES[badgeId] && !newBadges.includes(badgeId)) {
+        newBadges.push(badgeId);
+      }
+
+      if (newLevelInfo.current.level >= 5 && !newBadges.includes('level_5_master')) {
+        newBadges.push('level_5_master');
+      }
+
+      const updated = {
+        ...prev,
+        xp: newXp,
+        level: newLevelInfo.current.level,
+        unlockedBadges: newBadges
+      };
+
+      saveUserStats(updated);
+
+      // Toast dispatch
+      if (newLevelInfo.current.level > oldLevelInfo.current.level) {
+        setActiveToast({
+          type: 'levelup',
+          title: `🎉 LEVEL UP! Level ${newLevelInfo.current.level}`,
+          message: `Rank: ${language === 'ru' ? newLevelInfo.current.titleRu : newLevelInfo.current.titleEn}`
+        });
+      } else if (badgeId && BADGES[badgeId] && !prev.unlockedBadges.includes(badgeId)) {
+        const b = BADGES[badgeId];
+        setActiveToast({
+          type: 'badge',
+          title: `🏆 Badge Unlocked: ${b.icon} ${language === 'ru' ? b.nameRu : b.nameEn}`,
+          message: `+${amount} XP (${reason})`
+        });
+      } else {
+        setActiveToast({
+          type: 'xp',
+          title: `+${amount} XP Earned!`,
+          message: reason
+        });
+      }
+
+      return updated;
+    });
+  }, [language]);
+
   const categoryCounts = useMemo(() => {
     const counts = { all: commandsData.length };
     commandsData.forEach((cmd) => {
@@ -103,7 +170,6 @@ export default function App() {
     return counts;
   }, []);
 
-  // Stabilized & Weighted Search + Filtering Logic
   const filteredCommands = useMemo(() => {
     let result = searchCommands(commandsData, debouncedSearchTerm);
 
@@ -111,7 +177,6 @@ export default function App() {
       result = result.filter(cmd => cmd.category === selectedCategory);
     }
 
-    // Apply secondary sorting if user selected explicit order
     if (sortBy === 'name_asc') {
       result.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === 'name_desc') {
@@ -152,6 +217,8 @@ export default function App() {
         language={language}
         setLanguage={setLanguage}
         t={t}
+        userStats={userStats}
+        onOpenProfile={() => setShowProfileModal(true)}
       />
 
       {/* Main Container */}
@@ -217,7 +284,6 @@ export default function App() {
                   onClick={() => {
                     setSearchTerm('');
                     setSelectedCategory('all');
-                    setDescFilter('all');
                   }}
                   className="px-3 py-1 bg-[#21262d] text-emerald-400 rounded-lg text-xs border border-[#30363d] hover:bg-gray-800"
                 >
@@ -281,6 +347,26 @@ export default function App() {
             commands={commandsData}
             language={language}
             t={t}
+            onEarnXp={handleEarnXp}
+          />
+        ) : activeView === 'quests' ? (
+          <QuestsView
+            commands={commandsData}
+            onEarnXp={handleEarnXp}
+            language={language}
+            t={t}
+          />
+        ) : activeView === 'quiz' ? (
+          <QuizView
+            onEarnXp={handleEarnXp}
+            language={language}
+            t={t}
+          />
+        ) : activeView === 'speedtyper' ? (
+          <SpeedTyperView
+            onEarnXp={handleEarnXp}
+            language={language}
+            t={t}
           />
         ) : activeView === 'cheatsheet' ? (
           <CheatSheetView
@@ -303,7 +389,7 @@ export default function App() {
 
       </main>
 
-      {/* Modal */}
+      {/* Detail Modal */}
       {selectedCommand && (
         <CommandDetailModal
           command={selectedCommand}
@@ -315,6 +401,22 @@ export default function App() {
           t={t}
         />
       )}
+
+      {/* User Profile / Achievements Modal */}
+      {showProfileModal && (
+        <UserProfileModal
+          userStats={userStats}
+          onClose={() => setShowProfileModal(false)}
+          language={language}
+          t={t}
+        />
+      )}
+
+      {/* Floating XP / Level Toast Notification */}
+      <XpToast
+        toast={activeToast}
+        onClose={() => setActiveToast(null)}
+      />
 
     </div>
   );

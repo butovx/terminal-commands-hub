@@ -10,5 +10,16 @@ export default defineConfig({
     hmr: {
       clientPort: 443
     }
+  },
+  build: {
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'lucide-react'],
+          commandsData: ['./src/data/commands.json']
+        }
+      }
+    }
   }
 });

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { getCurrentLevelInfo } from '../utils/gamification';
 import {
   Terminal,
   Search,
@@ -8,7 +9,11 @@ import {
   BookOpen,
   Code,
   X,
-  Globe
+  Globe,
+  Award,
+  Brain,
+  Zap,
+  Flame
 } from 'lucide-react';
 
 export default function Header({
@@ -21,7 +26,9 @@ export default function Header({
   filteredCount,
   language,
   setLanguage,
-  t
+  t,
+  userStats,
+  onOpenProfile
 }) {
   const searchInputRef = useRef(null);
 
@@ -39,13 +46,15 @@ export default function Header({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const levelInfo = userStats ? getCurrentLevelInfo(userStats.xp) : null;
+
   return (
     <header className="bg-[#161b22] border-b border-[#30363d]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           
-          {/* Brand Logo & Language Switcher */}
-          <div className="flex items-center justify-between w-full md:w-auto gap-4">
+          {/* Brand Logo & Language Switcher & Profile Level Pill */}
+          <div className="flex items-center justify-between w-full md:w-auto gap-3">
             <div
               className="flex items-center gap-2.5 cursor-pointer group"
               onClick={() => setActiveView('grid')}
@@ -62,6 +71,22 @@ export default function Header({
                 </span>
               </div>
             </div>
+
+            {/* User Gamification Profile Pill */}
+            {userStats && levelInfo && (
+              <button
+                onClick={onOpenProfile}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0d1117] border border-emerald-500/40 hover:border-emerald-400 text-xs font-mono transition-all shadow-sm"
+              >
+                <span>{levelInfo.current.badge}</span>
+                <span className="text-white font-bold">Lvl {levelInfo.current.level}</span>
+                <span className="text-emerald-400 font-semibold">({userStats.xp} XP)</span>
+                <span className="flex items-center text-amber-400 ml-1 text-[11px]">
+                  <Flame className="w-3 h-3 fill-amber-400 mr-0.5" />
+                  {userStats.streak}d
+                </span>
+              </button>
+            )}
 
             {/* Language Switcher Toggle */}
             <div className="flex items-center gap-1 bg-[#0d1117] p-1 rounded-lg border border-[#30363d]">
@@ -86,13 +111,6 @@ export default function Header({
               >
                 RU
               </button>
-            </div>
-
-            {/* Mobile View Switcher shortcut */}
-            <div className="flex md:hidden items-center gap-1">
-              <span className="text-xs text-emerald-400 font-mono font-medium">
-                {filteredCount} {t.resCount}
-              </span>
             </div>
           </div>
 
@@ -119,11 +137,11 @@ export default function Header({
             </div>
           </div>
 
-          {/* Clean View Tabs */}
-          <div className="flex items-center gap-1 bg-[#0d1117] p-1 rounded-lg border border-[#30363d] w-full md:w-auto justify-center">
+          {/* Interactive View Tabs */}
+          <div className="flex flex-wrap items-center gap-1 bg-[#0d1117] p-1 rounded-lg border border-[#30363d] w-full md:w-auto justify-center">
             <button
               onClick={() => setActiveView('grid')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
                 activeView === 'grid'
                   ? 'bg-emerald-500 text-black font-semibold'
                   : 'text-gray-400 hover:text-white'
@@ -135,7 +153,7 @@ export default function Header({
 
             <button
               onClick={() => setActiveView('table')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
                 activeView === 'table'
                   ? 'bg-emerald-500 text-black font-semibold'
                   : 'text-gray-400 hover:text-white'
@@ -147,7 +165,7 @@ export default function Header({
 
             <button
               onClick={() => setActiveView('terminal')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
                 activeView === 'terminal'
                   ? 'bg-cyan-500 text-black font-semibold'
                   : 'text-gray-400 hover:text-white'
@@ -158,8 +176,44 @@ export default function Header({
             </button>
 
             <button
+              onClick={() => setActiveView('quests')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                activeView === 'quests'
+                  ? 'bg-emerald-400 text-black font-semibold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>{t.tabs.quests}</span>
+            </button>
+
+            <button
+              onClick={() => setActiveView('quiz')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                activeView === 'quiz'
+                  ? 'bg-purple-500 text-black font-semibold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Brain className="w-3.5 h-3.5" />
+              <span>{t.tabs.quiz}</span>
+            </button>
+
+            <button
+              onClick={() => setActiveView('speedtyper')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                activeView === 'speedtyper'
+                  ? 'bg-cyan-400 text-black font-semibold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>{t.tabs.speedtyper}</span>
+            </button>
+
+            <button
               onClick={() => setActiveView('cheatsheet')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
                 activeView === 'cheatsheet'
                   ? 'bg-amber-500 text-black font-semibold'
                   : 'text-gray-400 hover:text-white'
@@ -171,7 +225,7 @@ export default function Header({
 
             <button
               onClick={() => setActiveView('bookmarks')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all relative ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all relative ${
                 activeView === 'bookmarks'
                   ? 'bg-purple-500 text-black font-semibold'
                   : 'text-gray-400 hover:text-white'
