@@ -459,7 +459,10 @@ export default function App() {
       {showProfileModal && (
         <UserProfileModal
           userStats={userStats}
+          authUser={authUser}
           onClose={() => setShowProfileModal(false)}
+          onOpenAuth={() => setShowAuthModal(true)}
+          onLogout={handleLogout}
           language={language}
           t={t}
         />

@@ -1,8 +1,8 @@
 import React from 'react';
 import { BADGES, getCurrentLevelInfo } from '../utils/gamification';
-import { X, Award, Flame, Zap, Terminal, CheckCircle2, Flame as FlameIcon } from 'lucide-react';
+import { X, Award, Flame, Zap, Terminal, CheckCircle2, Flame as FlameIcon, UserCheck, LogIn, Cloud, Lock } from 'lucide-react';
 
-export default function UserProfileModal({ userStats, onClose, language = 'en', t }) {
+export default function UserProfileModal({ userStats, authUser, onClose, onOpenAuth, onLogout, language = 'en', t }) {
   const levelInfo = getCurrentLevelInfo(userStats.xp);
   const currentLevelTitle = language === 'ru' ? levelInfo.current.titleRu : levelInfo.current.titleEn;
   const nextLevelTitle = levelInfo.next ? (language === 'ru' ? levelInfo.next.titleRu : levelInfo.next.titleEn) : null;
@@ -33,8 +33,46 @@ export default function UserProfileModal({ userStats, onClose, language = 'en', 
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+        <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
           
+          {/* Cloud D1 Auth Banner */}
+          <div className={`p-4 rounded-xl border font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+            authUser
+              ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300'
+              : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+          }`}>
+            <div className="flex items-center gap-2.5">
+              <Cloud className="w-5 h-5 shrink-0" />
+              <div>
+                <strong className="block text-white text-xs">
+                  {authUser ? `🟢 ${language === 'ru' ? 'Аккаунт:' : 'Account:'} ${authUser.username}` : (language === 'ru' ? '🟡 Гостевой режим (localStorage)' : '🟡 Guest Mode (localStorage)')}
+                </strong>
+                <span className="text-[11px] opacity-80">
+                  {authUser
+                    ? (language === 'ru' ? 'Синхронизация с Cloudflare D1 активна' : 'Cloudflare D1 sync active')
+                    : (language === 'ru' ? 'Войдите для сохранения прогресса на сервере' : 'Sign in to sync progress across devices')}
+                </span>
+              </div>
+            </div>
+
+            {authUser ? (
+              <button
+                onClick={() => { onClose(); onLogout(); }}
+                className="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 font-bold transition-all text-xs whitespace-nowrap"
+              >
+                {t.auth.logout}
+              </button>
+            ) : (
+              <button
+                onClick={() => { onClose(); onOpenAuth(); }}
+                className="px-3 py-1.5 rounded-lg bg-emerald-500 text-black font-bold hover:opacity-90 transition-all text-xs whitespace-nowrap flex items-center justify-center gap-1"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>{language === 'ru' ? 'Войти / Создать аккаунт' : 'Sign In / Register'}</span>
+              </button>
+            )}
+          </div>
+
           {/* XP Progress Bar */}
           <div className="bg-[#0d1117] p-4 rounded-xl border border-[#30363d] space-y-2">
             <div className="flex items-center justify-between text-xs font-mono">
