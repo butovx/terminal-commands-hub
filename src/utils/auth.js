@@ -32,6 +32,32 @@ export function clearAuthSession() {
   }
 }
 
+export async function verifySession() {
+  const { token } = getStoredAuth();
+  if (!token) return null;
+
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (!res.ok) {
+      clearAuthSession();
+      return null;
+    }
+    const data = await res.json();
+    if (data.user) {
+      saveAuthSession(token, data.user);
+      return data.user;
+    }
+    return null;
+  } catch {
+    return getStoredAuth().user;
+  }
+}
+
 export async function registerUser({ username, email, password }) {
   try {
     const res = await fetch('/api/auth/register', {
