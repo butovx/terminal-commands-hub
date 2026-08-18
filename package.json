@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "wrangler pages deploy dist"
+    "deploy": "wrangler pages deploy dist",
+    "db:create": "npx wrangler d1 create terminal_hub_db",
+    "db:migrate": "npx wrangler d1 execute terminal_hub_db --remote --file=./schema.sql"
   },
   "dependencies": {
     "clsx": "^2.1.1",
