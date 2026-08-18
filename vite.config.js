@@ -9,7 +9,10 @@ export default defineConfig({
     allowedHosts: true
   },
   build: {
-    chunkSizeWarningLimit: 2500,
+    target: 'es2020',
+    chunkSizeWarningLimit: 2000,
+    cssCodeSplit: true,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
