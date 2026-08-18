@@ -4,12 +4,12 @@ async function hashPassword(password, salt) {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
-    enc.encode(password + salt),
+    enc.encode(password),
     { name: "PBKDF2" },
     false,
-    ["deriveBits", "deriveKey"]
+    ["deriveBits"]
   );
-  const key = await crypto.subtle.deriveKey(
+  const derivedBits = await crypto.subtle.deriveBits(
     {
       name: "PBKDF2",
       salt: enc.encode(salt),
@@ -17,67 +17,72 @@ async function hashPassword(password, salt) {
       hash: "SHA-256"
     },
     keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    true,
-    ["encrypt", "decrypt"]
+    256
   );
-  const exported = await crypto.subtle.exportKey("raw", key);
-  const hashArray = Array.from(new Uint8Array(exported));
+  const hashArray = Array.from(new Uint8Array(derivedBits));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const headers = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization"
+};
+
+export async function onRequestOptions() {
+  return new Response(null, { headers });
 }
 
 export async function onRequestPost({ request, env }) {
   try {
-    const { login, password } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const { login, password } = body;
 
     if (!login || !password) {
       return new Response(JSON.stringify({ error: "Missing login or password" }), {
         status: 400,
-        headers: { "Content-Type": "application/json" }
+        headers
       });
     }
 
     const db = env.DB;
     if (!db) {
-      const mockId = 'user_' + Math.random().toString(36).substring(2, 9);
-      const token = btoa(JSON.stringify({ id: mockId, username: login, email: `${login}@terminal.hub`, exp: Date.now() + 86400000 * 7 }));
+      const mockId = 'usr_' + Math.random().toString(36).substring(2, 10);
+      const token = btoa(JSON.stringify({ id: mockId, username: login, email: `${login}@terminal.hub`, exp: Date.now() + 86400000 * 30 }));
       return new Response(JSON.stringify({
         token,
         user: { id: mockId, username: login, email: `${login}@terminal.hub` }
-      }), {
-        headers: { "Content-Type": "application/json" }
-      });
+      }), { headers });
     }
 
     const user = await db.prepare("SELECT * FROM users WHERE username = ? OR email = ?").bind(login, login).first();
     if (!user) {
-      return new Response(JSON.stringify({ error: "Invalid credentials" }), {
+      return new Response(JSON.stringify({ error: "Invalid login or password" }), {
         status: 401,
-        headers: { "Content-Type": "application/json" }
+        headers
       });
     }
 
     const computedHash = await hashPassword(password, user.salt);
     if (computedHash !== user.password_hash) {
-      return new Response(JSON.stringify({ error: "Invalid credentials" }), {
+      return new Response(JSON.stringify({ error: "Invalid login or password" }), {
         status: 401,
-        headers: { "Content-Type": "application/json" }
+        headers
       });
     }
 
-    const token = btoa(JSON.stringify({ id: user.id, username: user.username, email: user.email, exp: Date.now() + 86400000 * 7 }));
+    const token = btoa(JSON.stringify({ id: user.id, username: user.username, email: user.email, exp: Date.now() + 86400000 * 30 }));
 
     return new Response(JSON.stringify({
       token,
       user: { id: user.id, username: user.username, email: user.email }
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
+    }), { headers });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: err.message || "Login failed" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" }
+      headers
     });
   }
 }
